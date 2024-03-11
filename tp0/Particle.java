@@ -5,18 +5,12 @@ public class Particle {
     private float radius;
     private List<Particle> neighbors;
 
-    public Particle(int id, float x, float y) {
+    public Particle(int id, float x, float y, float radius) {
         this.id = id;
         this.x = x;
         this.y = y;
-        this.isSelected = false;
-    }
-
-    public Particle(int id, float x, float y, boolean isSelected) {
-        this.id = id;
-        this.x = x;
-        this.y = y;
-        this.isSelected = isSelected;
+        this.radius = radius;
+        this.neighbors = new ArrayList();
     }
 
     public int getId() {
@@ -31,8 +25,13 @@ public class Particle {
         return y;
     }
 
+    public float getRadius() {
+        return radius;
+    }
+
     public void isNeighbor(Particle p, float rc) {
-        this.isNeighbor = Math.sqrt(Math.pow(this.x - p.getX(), 2) + Math.pow(this.y - p.getY(), 2)) < rc;
+        this.isNeighbor = Math.sqrt(Math.pow(this.x - p.getX(), 2) + Math.pow(this.y - p.getY(), 2)) < rc + this.radius + p.getRadius();
+        neighbors/
     }
 
 }
