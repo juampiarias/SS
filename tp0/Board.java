@@ -37,7 +37,6 @@ public class Board {
 
     public void cellIndexMethod () {
 
-
     }
 
     public static void main(String[] args) {

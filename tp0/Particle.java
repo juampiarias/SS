@@ -2,8 +2,8 @@ public class Particle {
     private int id;
     private float x;
     private float y;
-    private boolean isNeighbor;
-    private boolean isSelected;
+    private float radius;
+    private List<Particle> neighbors;
 
     public Particle(int id, float x, float y) {
         this.id = id;
