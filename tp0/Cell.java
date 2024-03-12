@@ -3,12 +3,12 @@ import java.util.List;
 
 public class Cell {
 
-    final List<Particle> particles;
-    float size;
+    private final List<Particle> particles;
+    private float size;
     final int id;
 
     public Cell (float size, int id) {
-        particles = new ArrayList<>();
+        this.particles = new ArrayList<>();
         this.size = size;
         this.id = id;
     }
@@ -17,8 +17,31 @@ public class Cell {
         particles.add(p);
     }
 
-    public void findNeighbors (Particle p, float rc) {
-        particles.forEach(e -> e.isNeighbor(p, rc));
+    public void findNeighbors (float rc) {
+        //find neighbors in own cell
+        Particle p;
+        for (int i=0; i<this.particles.size(); i++) {
+            p = this.particles.get(i);
+            for (int j=i+1; j<this.particles.size(); j++) {
+                p.isNeighbor(this.particles.get(j), rc);
+            }
+        }
     }
 
+    public void findNeighbors (float rc, Cell adjacent) {
+        this.particles.forEach(p -> adjacent.findNeighbors(rc, p));
+    }
+
+    public void findNeighbors (float rc, Particle p) {
+        this.particles.forEach(e -> e.isNeighbor(p, rc));
+    }
+
+    @Override
+    public String toString() {
+        return "\nCell{" +
+                "id=" + id +
+                ", size=" + size +
+                ", particles=" + particles +
+                '}';
+    }
 }
