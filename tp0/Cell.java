@@ -38,10 +38,8 @@ public class Cell {
 
     @Override
     public String toString() {
-        return "\nCell{" +
-                "id=" + id +
-                ", size=" + size +
-                ", particles=" + particles +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        particles.forEach(p -> builder.append(p.toString()));
+        return builder.toString();
     }
 }

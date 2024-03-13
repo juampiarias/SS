@@ -49,13 +49,7 @@ public class Particle {
 
     @Override
     public String toString() {
-        return "\nParticle{" +
-                "id=" + id +
-                ", x=" + x +
-                ", y=" + y +
-                ", radius=" + radius +
-                ", neighbors=" + this.getNeighbors() +
-                '}';
+        return id + ";" + this.getNeighbors() + '\n';
     }
 
     public String getNeighbors() {

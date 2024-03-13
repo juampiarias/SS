@@ -78,13 +78,9 @@ public class Board {
 
     @Override
     public String toString() {
-        return "Board{" +
-                "rc=" + rc +
-                ", L=" + L +
-                ", M=" + M +
-                ", N=" + N +
-                ", cells=" + cells +
-                '}';
+        StringBuilder builder = new StringBuilder();
+        cells.forEach(c -> builder.append(c.toString()));
+        return builder.toString();
     }
 
     public static void main(String[] args) {
