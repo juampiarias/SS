@@ -18,27 +18,61 @@ public class Board {
         this.cells = cells;
     }
 
-    public void cellIndexMethod () {
+    public void cellIndexMethod (boolean openBorders) {
         Cell aux;
-        int cellSize = M*M;
-        int adjacent;
-        for (int i=0; i<M*M; i++) {
+        int cellCount = M*M;
+
+        if (openBorders) {
+            int i;
+            for (i=0; i<M*(M-1); i++) {
+                aux = cells.get(i);
+                aux.findNeighbors(rc);
+
+                aux.findNeighbors(rc, cells.get( (i+1)%cellCount ), L, 0);
+                aux.findNeighbors(rc, cells.get( (i+M-1)%cellCount ), L, 0);
+                aux.findNeighbors(rc, cells.get( (i+M)%cellCount ), 0, 0);
+                if (i%M != M-1)
+                    aux.findNeighbors(rc, cells.get( (i+M+1)%cellCount ), 0, 0);
+            }
+
+            // last row
+            for (i=M*(M-1); i<(M*M)-1; i++) {
+                aux = cells.get(i);
+                aux.findNeighbors(rc);
+                aux.findNeighbors(rc, cells.get( (i+1)%cellCount ), L, 0);
+                aux.findNeighbors(rc, cells.get( (i+M-1)%cellCount ), 0, L);
+                aux.findNeighbors(rc, cells.get( (i+M)%cellCount ), 0, L);
+                if (i%M != M-1)
+                    aux.findNeighbors(rc, cells.get( (i+M+1)%cellCount ), 0, L);
+            }
+
+            // M*M-1 con +M-1 y +M
+            i = (M*M)-1;
             aux = cells.get(i);
-
             aux.findNeighbors(rc);
+            aux.findNeighbors(rc, cells.get( (i+M-1)%cellCount ), 0, L);
+            aux.findNeighbors(rc, cells.get( (i+M)%cellCount ), 0, L);
+            aux.findNeighbors(rc, cells.get( (i+1)%cellCount ), L, L);
+        } else {
+            int adjacent;
+            for (int i=0; i<M*M; i++) {
+                aux = cells.get(i);
 
-            adjacent = i+1;
-            if (adjacent < cellSize && i%M!=M-1)
-                aux.findNeighbors(rc, cells.get(adjacent));
-            adjacent = i+M-1;
-            if (adjacent < cellSize && i%M!=0)
-                aux.findNeighbors(rc, cells.get(adjacent));
-            adjacent = i+M;
-            if (adjacent < cellSize)
-                aux.findNeighbors(rc, cells.get(adjacent));
-            adjacent = i+M+1;
-            if (adjacent < cellSize && i%M!=M-1)
-                aux.findNeighbors(rc, cells.get(adjacent));
+                aux.findNeighbors(rc);
+
+                adjacent = i+1;
+                if (adjacent < cellCount && i%M!=M-1)
+                    aux.findNeighbors(rc, cells.get(adjacent), 0, 0);
+                adjacent = i+M-1;
+                if (adjacent < cellCount && i%M!=0)
+                    aux.findNeighbors(rc, cells.get(adjacent), 0, 0);
+                adjacent = i+M;
+                if (adjacent < cellCount)
+                    aux.findNeighbors(rc, cells.get(adjacent), 0, 0);
+                adjacent = i+M+1;
+                if (adjacent < cellCount && i%M!=M-1)
+                    aux.findNeighbors(rc, cells.get(adjacent), 0, 0);
+            }
         }
     }
 
@@ -82,7 +116,7 @@ public class Board {
             e.printStackTrace();
         }
         Board board = new Board(L, M, N, rc, cells);
-        board.cellIndexMethod();
+        board.cellIndexMethod(true);
         System.out.println(board);
     }
 }

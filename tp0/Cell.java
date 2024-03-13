@@ -23,17 +23,17 @@ public class Cell {
         for (int i=0; i<this.particles.size(); i++) {
             p = this.particles.get(i);
             for (int j=i+1; j<this.particles.size(); j++) {
-                p.isNeighbor(this.particles.get(j), rc);
+                p.isNeighbor(this.particles.get(j), rc, 0, 0);
             }
         }
     }
 
-    public void findNeighbors (float rc, Cell adjacent) {
-        this.particles.forEach(p -> adjacent.findNeighbors(rc, p));
+    public void findNeighbors (float rc, Cell adjacent, float increaseX, float increaseY) {
+        this.particles.forEach(p -> adjacent.findNeighbors(rc, p, increaseX, increaseY));
     }
 
-    public void findNeighbors (float rc, Particle p) {
-        this.particles.forEach(e -> e.isNeighbor(p, rc));
+    public void findNeighbors (float rc, Particle p, float increaseX, float increaseY) {
+        this.particles.forEach(e -> e.isNeighbor(p, rc, increaseX, increaseY));
     }
 
     @Override

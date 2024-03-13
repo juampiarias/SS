@@ -67,8 +67,10 @@ public class Particle {
         return toReturn.toString();
     }
 
-    public void isNeighbor(Particle p, float rc) {
-        boolean isNeighbor = !this.equals(p) && Math.sqrt(Math.pow(this.x - p.getX(), 2) + Math.pow(this.y - p.getY(), 2)) < rc + this.radius + p.getRadius();
+    public void isNeighbor(Particle p, float rc, float increaseX, float increaseY) {
+        boolean isNeighbor = !this.equals(p) &&
+                (Math.sqrt(Math.pow(this.x - p.getX(), 2) + Math.pow(this.y - p.getY(), 2)) < rc + this.radius + p.getRadius() ||
+                Math.sqrt(Math.pow(this.x - p.getX() + increaseX, 2) + Math.pow(this.y - p.getY() + increaseY, 2)) < rc + this.radius + p.getRadius());
         if (isNeighbor) {
             this.addNeighbor(p);
             p.addNeighbor(this);
