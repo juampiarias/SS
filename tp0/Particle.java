@@ -53,11 +53,10 @@ public class Particle {
     }
 
     public String getNeighbors() {
-        StringBuilder toReturn = new StringBuilder("[");
+        StringBuilder toReturn = new StringBuilder();
         neighbors.forEach(n -> toReturn.append(n.id).append(","));
         if (!neighbors.isEmpty())
             toReturn.deleteCharAt(toReturn.lastIndexOf(","));
-        toReturn.append("]");
         return toReturn.toString();
     }
 

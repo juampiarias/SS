@@ -93,15 +93,17 @@ public class Board {
             cells.add(new Cell(L/(float)M, i));
         }
         String csvFile = "/Users/juaarias/Documents/SS/tp0/particles.csv";
+//        String csvFile = "/home/gelewaut/itba/SS/tp0/particles.csv";
         String line;
         String splitter = ";";
         List<Particle> particles = new ArrayList<>();
         int id = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            br.readLine();
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(splitter);
-                Particle particle = new Particle(id, Float.parseFloat(data[0]), Float.parseFloat(data[1]), Float.parseFloat(data[2]));
+                Particle particle = new Particle(Integer.parseInt(data[0]), Float.parseFloat(data[1]), Float.parseFloat(data[2]), Float.parseFloat(data[3]));
                 particles.add(particle);
                 id += 1;
                 int xx = (int)(particle.getX()/(L/(float)M));
@@ -112,7 +114,7 @@ public class Board {
             e.printStackTrace();
         }
         Board board = new Board(L, M, N, rc, cells);
-        board.cellIndexMethod(true);
+        board.cellIndexMethod(false);
         System.out.println(board);
     }
 }
