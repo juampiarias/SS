@@ -3,7 +3,7 @@ import csv
 import pandas as pd
 
 if __name__ == "__main__":
-    with open("out.csv", "r") as csv_file:
+    with open("../out.csv", "r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=';')
         particles = []
         neighbors = []
@@ -12,7 +12,7 @@ if __name__ == "__main__":
             neighbors.append([int(x) for x in row[1].split(',') if x.strip()])
 
     # Read the CSV file into a DataFrame
-    df = pd.read_csv('particles.csv', delimiter=';')
+    df = pd.read_csv('../particles.csv', delimiter=';')
     # Extracting x, y coordinates, and radii from the DataFrame
     ids = df['particle_id']
     x_coords = df['x_coordinate']
