@@ -31,7 +31,7 @@ if __name__ == "__main__":
         else:
             circle = plt.Circle((x, y), r, color='b', fill=True)
         if i == particles[0]:
-            plt.gca().add_artist(plt.Circle((x, y), r+0.9, color='r', fill=False))
+            plt.gca().add_artist(plt.Circle((x, y), r+4, color='r', fill=False))
         plt.gca().add_artist(circle)
 
     plt.scatter(x_coords, y_coords, color='r', label='Particles')

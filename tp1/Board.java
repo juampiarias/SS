@@ -84,15 +84,15 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        float rc = 0.9f;
-        int L = 3;
-        int M = 3;
-        int N = 10;
+        float rc = 4f;
+        int L = 20;
+        int M = 1;
+        int N = 100;
         List<Cell> cells = new ArrayList<>();
         for (int i=0; i<M*M; i++) {
             cells.add(new Cell(L/(float)M, i));
         }
-        String csvFile = "/Users/juaarias/Documents/SS/tp0/particles.csv";
+        String csvFile = "/Users/juaarias/Documents/SS/tp1/particles.csv";
 //        String csvFile = "/home/gelewaut/itba/SS/tp0/particles.csv";
         String line;
         String splitter = ";";
@@ -114,7 +114,11 @@ public class Board {
             e.printStackTrace();
         }
         Board board = new Board(L, M, N, rc, cells);
-        board.cellIndexMethod(false);
+        long startTime = System.nanoTime();
+        board.cellIndexMethod(true);
+        long endTime = System.nanoTime();
+        double durationSeconds = (endTime - startTime) / 1e9;
+        System.out.println(durationSeconds);
         System.out.println(board);
     }
 }
