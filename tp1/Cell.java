@@ -28,6 +28,10 @@ public class Cell {
         }
     }
 
+    public List<Particle> getParticles () {
+        return this.particles;
+    }
+
     public void findNeighbors (float rc, Cell adjacent, float increaseX, float increaseY) {
         this.particles.forEach(p -> adjacent.findNeighbors(rc, p, increaseX, increaseY));
     }

@@ -1,0 +1,9 @@
+{
+  "M": 13,
+  "N": 300,
+  "rc": 1,
+  "L": 20,
+  "out_file": "../out.csv",
+  "particles": "300.csv",
+  "selected": 0
+}

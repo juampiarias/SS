@@ -18,8 +18,25 @@ public class Board {
         this.cells = cells;
     }
 
+    private void cellCompare (List<Particle> cell1, List<Particle> cell2, float rc, float increaseX, float increaseY) {
+        cell1.forEach( p1 -> {
+            cell2.forEach( p2 -> {
+                p1.isNeighbor(p2, rc, increaseX, increaseY);
+            });
+        });
+    }
+
+    private void cellCompareCorner (List<Particle> cell1, List<Particle> cell2, float rc, float increaseX, float increaseY) {
+        cell1.forEach( p1 -> {
+            cell2.forEach( p2 -> {
+                p1.isNeighborCorner(p2, rc, increaseX, increaseY);
+            });
+        });
+    }
+
     public void cellIndexMethod (boolean openBorders) {
         Cell aux;
+        List<Particle> l1;
         int cellCount = M*M;
 
         if (openBorders) {
@@ -28,31 +45,56 @@ public class Board {
                 aux = cells.get(i);
                 aux.findNeighbors(rc);
 
-                aux.findNeighbors(rc, cells.get( (i+1)%cellCount ), L, 0);
-                aux.findNeighbors(rc, cells.get( (i+M-1)%cellCount ), L, 0);
-                aux.findNeighbors(rc, cells.get( (i+M)%cellCount ), 0, 0);
-                if (i%M != M-1)
-                    aux.findNeighbors(rc, cells.get( (i+M+1)%cellCount ), 0, 0);
+                l1 = aux.getParticles();
+                if (i%M == 0) {
+                    cellCompare(l1, cells.get(i+1).getParticles(), rc, 0, 0);
+                    cellCompare(l1, cells.get(i+M-1).getParticles(), rc, L, 0);
+                    cellCompare(l1, cells.get(i+M).getParticles(), rc, 0, 0);
+                    cellCompare(l1, cells.get(i+M+1).getParticles(), rc, 0, 0);
+                } else if (i%M == M-1) {
+                    cellCompare(cells.get(i+1).getParticles(), l1, rc, L, 0);
+                    cellCompare(l1, cells.get(i+M-1).getParticles(), rc, 0, 0);
+                    cellCompare(l1, cells.get(i+M).getParticles(), rc, 0, 0);
+                } else {
+                    cellCompare(l1, cells.get(i+1).getParticles(), rc, 0, 0);
+                    cellCompare(l1, cells.get(i+M-1).getParticles(), rc, 0, 0);
+                    cellCompare(l1, cells.get(i+M).getParticles(), rc, 0, 0);
+                    cellCompare(l1, cells.get(i+M+1).getParticles(), rc, 0, 0);
+                }
             }
 
-            // last row
-            for (i=M*(M-1); i<(M*M)-1; i++) {
-                aux = cells.get(i);
-                aux.findNeighbors(rc);
-                aux.findNeighbors(rc, cells.get( (i+1)%cellCount ), L, 0);
-                aux.findNeighbors(rc, cells.get( (i+M-1)%cellCount ), 0, L);
-                aux.findNeighbors(rc, cells.get( (i+M)%cellCount ), 0, L);
-                if (i%M != M-1)
-                    aux.findNeighbors(rc, cells.get( (i+M+1)%cellCount ), 0, L);
-            }
-
-            // M*M-1 con +M-1 y +M
-            i = (M*M)-1;
+            //M*(M-1)
+            i = M*(M-1);
             aux = cells.get(i);
             aux.findNeighbors(rc);
-            aux.findNeighbors(rc, cells.get( (i+M-1)%cellCount ), 0, L);
-            aux.findNeighbors(rc, cells.get( (i+M)%cellCount ), 0, L);
-            aux.findNeighbors(rc, cells.get( (i+1)%cellCount ), L, L);
+            l1 = aux.getParticles();
+            cellCompare(l1, cells.get(i+1).getParticles(), rc, 0, 0);
+            cellCompare(l1, cells.get(i+M-1).getParticles(), rc, L, 0);
+            cellCompare(cells.get((i+M)%cellCount).getParticles(), l1,  rc, 0, L);
+            cellCompare(cells.get((i+M+1)%cellCount).getParticles(), l1, rc, 0, L);
+            //caso especial
+
+            cellCompareCorner(l1, cells.get(M-1).getParticles(), rc, L, L);
+
+            //Last Row without corners
+            for (i = (M*(M-1))+1; i<cellCount-1; i++) {
+                aux = cells.get(i);
+                aux.findNeighbors(rc);
+                l1 = aux.getParticles();
+                cellCompare(l1, cells.get(i+1).getParticles(), rc, 0, 0);
+                cellCompare(cells.get((i+M-1)%cellCount).getParticles(), l1, rc, 0, L);
+                cellCompare(cells.get((i+M)%cellCount).getParticles(), l1,  rc, 0, L);
+                cellCompare(cells.get((i+M+1)%cellCount).getParticles(), l1, rc, 0, L);
+            }
+
+            i=(M*M)-1;
+            aux = cells.get(i);
+            aux.findNeighbors(rc);
+            l1 = aux.getParticles();
+            cellCompare(cells.get((i+1)%cellCount).getParticles(), l1, rc, L, L);
+            cellCompare(cells.get((i+M-1)%cellCount).getParticles(), l1, rc, 0, L);
+            cellCompare(cells.get((i+M)%cellCount).getParticles(), l1,  rc, 0, L);
+
         } else {
             int adjacent;
             for (int i=0; i<M*M; i++) {
@@ -84,16 +126,16 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        float rc = 4f;
+        float rc = 1f;
         int L = 20;
-        int M = 1;
-        int N = 100;
+        int M = 13;
+        int N = 300;
         List<Cell> cells = new ArrayList<>();
         for (int i=0; i<M*M; i++) {
             cells.add(new Cell(L/(float)M, i));
         }
-        String csvFile = "/Users/juaarias/Documents/SS/tp1/particles.csv";
-//        String csvFile = "/home/gelewaut/itba/SS/tp0/particles.csv";
+//        String csvFile = "/Users/juaarias/Documents/SS/tp1/particles.csv";
+        String csvFile = "/home/gelewaut/itba/SS/tp1/python/300.csv";
         String line;
         String splitter = ";";
         List<Particle> particles = new ArrayList<>();
@@ -118,7 +160,7 @@ public class Board {
         board.cellIndexMethod(true);
         long endTime = System.nanoTime();
         double durationSeconds = (endTime - startTime) / 1e9;
-        System.out.println(durationSeconds);
+//        System.out.println(durationSeconds);
         System.out.println(board);
     }
 }
