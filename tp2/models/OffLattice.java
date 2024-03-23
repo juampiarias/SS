@@ -3,10 +3,10 @@ import java.util.List;
 
 public class OffLattice {
     double rc;
-    int L;
+    double L;
     int M;
 
-    public OffLattice(int L, int M, double rc) {
+    public OffLattice(double L, int M, double rc) {
         this.L = L;
         this.M = M;
         this.rc = rc;

@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -25,10 +22,11 @@ public class tp2 {
         }
 
         int N = Integer.parseInt(prop.getProperty("n"));
-        int L = Integer.parseInt(prop.getProperty("l"));
+        double L = Double.parseDouble(prop.getProperty("l"));
         double v = Double.parseDouble(prop.getProperty("v"));
         int M = Integer.parseInt(prop.getProperty("m"));
         double rc = Double.parseDouble(prop.getProperty("rc"));
+        double eta = Double.parseDouble(prop.getProperty("eta"));
         int iterations = Integer.parseInt(prop.getProperty("iter"));
 
         String csvFile = prop.getProperty("java") + prop.getProperty("input");
@@ -46,7 +44,9 @@ public class tp2 {
                                 Double.parseDouble(data[2]),
                                 0,
                                 Double.parseDouble(data[3]),
-                                v);
+                                v,
+                                L,
+                                eta);
                 particles.add(particle);
             }
         } catch (IOException ex) {
@@ -56,9 +56,18 @@ public class tp2 {
 
         OffLattice board = new OffLattice(L, M, rc);
 
-        for(int i=0; i<iterations; i++) {
-            board.iterate(particles);
-            //TODO: print particles
+        try {
+            FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
+            for(int i=0; i<iterations; i++) {
+                writer.write("t" + i + '\n');
+                for (Bird b: particles) {
+                    writer.write(b.toString());
+                }
+                board.iterate(particles);
+            }
+            writer.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

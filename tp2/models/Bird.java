@@ -1,5 +1,6 @@
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 
 public class Bird {
@@ -11,15 +12,22 @@ public class Bird {
     private double neighborsAngleAvg;
     private int angleCounter;
     private double v;
+    private double L;
+    private double eta;
+    private Random randomGenerator;
 
-    public Bird(int id, double x, double y, double radius, double angle, double v) {
+    public Bird(int id, double x, double y, double radius, double angle, double v, double L, double eta) {
         this.id = id;
         this.x = x;
         this.y = y;
         this.radius = radius;
+        this.angle = angle;
         this.angleCounter = 1;
         this.neighborsAngleAvg = angle;
         this.v = v;
+        this.L = L;
+        this.eta = eta;
+        this.randomGenerator = new Random();
     }
 
     public int getId() {
@@ -47,15 +55,26 @@ public class Bird {
     }
 
     public void setX(double x) {
-        this.x = x;
+        if (x<0) {
+            this.x = x+L;
+        } else {
+            this.x = x;
+        }
     }
 
     public void setY(double y) {
-        this.y = y;
+        if (y<0) {
+            this.y = y+L;
+        } else
+            this.y = y;
     }
 
     public void setAngle(double angle) {
-        this.angle = angle;
+        double sound = randomGenerator.nextDouble(-eta/2, eta/2);
+        this.angle = (angle + sound)%360;
+        if (sound < 0) {
+            this.angle+=360;
+        }
     }
 
     public void addNeighbor(Bird b) {
@@ -93,11 +112,21 @@ public class Bird {
         }
     }
     public void moveBird() {
-        this.angle = neighborsAngleAvg/angleCounter;
+        this.setAngle(neighborsAngleAvg/angleCounter);
         this.setY(Math.sin(this.angle)*this.v);
         this.setX(Math.cos(this.angle)*this.v);
         this.angleCounter = 1;
         this.neighborsAngleAvg = this.angle;
+    }
+
+    @Override
+    public String toString() {
+        return id +
+                ";" + x +
+                ";" + y +
+                ";" + angle +
+                ";" + radius +
+                ";" + v + '\n';
     }
 }
 
