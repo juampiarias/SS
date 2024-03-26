@@ -9,7 +9,8 @@ public class Bird {
     private double y;
     private double radius;
     private double angle;
-    private double neighborsAngleAvg;
+    private double sinAngleAvg;
+    private double cosAngleAvg;
     private int angleCounter;
     private double v;
     private double L;
@@ -23,7 +24,9 @@ public class Bird {
         this.radius = radius;
         this.angle = angle;
         this.angleCounter = 1;
-        this.neighborsAngleAvg = angle;
+        this.sinAngleAvg = 0;
+        this.cosAngleAvg = 0;
+        this.addAngle(angle);
         this.v = v;
         this.L = L;
         this.eta = eta;
@@ -69,16 +72,26 @@ public class Bird {
             this.y = y;
     }
 
-    public void setAngle(double angle) {
+    public void setAngle() {
+        this.sinAngleAvg/=this.angleCounter;
+        this.cosAngleAvg/=this.angleCounter;
+
+        this.angle = Math.toDegrees(Math.atan2(this.sinAngleAvg, this.cosAngleAvg));
         double sound = randomGenerator.nextDouble(-eta/2, eta/2);
-        this.angle = (angle + sound)%360;
-        if (sound < 0) {
+        this.angle = (this.angle + sound)%360;
+        if (this.angle < 0) {
             this.angle+=360;
         }
     }
 
+    public void addAngle(double angle) {
+        double aux = Math.toRadians(angle);
+        this.sinAngleAvg += Math.sin(aux);
+        this.cosAngleAvg += Math.cos(aux);
+    }
+
     public void addNeighbor(Bird b) {
-        this.neighborsAngleAvg += b.getAngle();
+        this.addAngle(b.getAngle());
         this.angleCounter += 1;
     }
 
@@ -112,11 +125,16 @@ public class Bird {
         }
     }
     public void moveBird() {
-        this.setAngle(neighborsAngleAvg/angleCounter);
-        this.setY(Math.sin(this.angle)*this.v);
-        this.setX(Math.cos(this.angle)*this.v);
+        this.setAngle();
+
+        double aux = Math.toRadians(this.angle);
+        this.setY((this.y + Math.sin(aux)*this.v)%this.L);
+        this.setX((this.x + Math.cos(aux)*this.v)%this.L);
+
+        this.sinAngleAvg = 0;
+        this.cosAngleAvg = 0;
+        this.addAngle(this.angle);
         this.angleCounter = 1;
-        this.neighborsAngleAvg = this.angle;
     }
 
     @Override

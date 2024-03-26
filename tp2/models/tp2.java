@@ -5,6 +5,7 @@ import java.util.Properties;
 
 public class tp2 {
     public static void main(String[] args) {
+//        /*
         String config_file = "tp2/configs/app.config";
         Properties prop = new Properties();
         try (FileInputStream fis = new FileInputStream(config_file)) {
@@ -58,16 +59,32 @@ public class tp2 {
 
         try {
             FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
+            FileWriter vaWriter = new FileWriter(prop.getProperty("java") + "va_" + prop.getProperty("output"));
+            double sinSum = 0;
+            double cosSum = 0;
+            double aux = 0;
+
             for(int i=0; i<iterations; i++) {
                 writer.write("t" + i + '\n');
                 for (Bird b: particles) {
+                    aux = Math.toRadians(b.getAngle());
+                    sinSum += Math.sin(aux);
+                    cosSum += Math.cos(aux);
                     writer.write(b.toString());
                 }
+                sinSum/= particles.size();
+                cosSum/= particles.size();
+                aux = Math.sqrt(Math.pow(sinSum,2) + Math.pow(cosSum,2));
+                vaWriter.write(aux + "\n");
+//                System.out.println(aux);
+//                System.out.println(Math.toDegrees(Math.atan2(sinSum,cosSum)));
                 board.iterate(particles);
             }
             writer.flush();
-        } catch (Exception e) {
+            vaWriter.flush();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+//         */
     }
 }

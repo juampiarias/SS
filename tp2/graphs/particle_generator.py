@@ -2,13 +2,13 @@ import csv
 import random
 
 # Number of particles
-num_particles = 300
+num_particles = 1000
 
 # Size of the space
 space_size = 5
 
 # Open CSV file for writing
-with open('../ios/input300.csv', 'w') as csvfile:
+with open('../ios/input1000.csv', 'w') as csvfile:
     fieldnames = ['particle_id', 'x_coordinate', 'y_coordinate', 'angle']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';')
     writer.writeheader()
