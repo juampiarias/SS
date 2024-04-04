@@ -79,6 +79,8 @@ public class tp2 {
 //                System.out.println(aux);
 //                System.out.println(Math.toDegrees(Math.atan2(sinSum,cosSum)));
                 board.iterate(particles);
+                sinSum = 0;
+                cosSum = 0;
             }
             writer.flush();
             vaWriter.flush();

@@ -73,12 +73,25 @@ public class Bird {
     }
 
     public void setAngle() {
+        /*
         this.sinAngleAvg/=this.angleCounter;
         this.cosAngleAvg/=this.angleCounter;
 
         this.angle = Math.toDegrees(Math.atan2(this.sinAngleAvg, this.cosAngleAvg));
         double sound = randomGenerator.nextDouble(-eta/2, eta/2);
         this.angle = (this.angle + sound)%360;
+        if (this.angle < 0) {
+            this.angle+=360;
+        }
+         */
+        this.sinAngleAvg/=this.angleCounter;
+        this.cosAngleAvg/=this.angleCounter;
+        double sound = randomGenerator.nextDouble(-eta/2, eta/2);
+        this.sinAngleAvg += sound;
+        this.cosAngleAvg += sound;
+
+        this.angle = Math.toDegrees(Math.atan2(this.sinAngleAvg, this.cosAngleAvg));
+//        this.angle = (this.angle + sound)%360;
         if (this.angle < 0) {
             this.angle+=360;
         }
@@ -142,9 +155,7 @@ public class Bird {
         return id +
                 ";" + x +
                 ";" + y +
-                ";" + angle +
-                ";" + radius +
-                ";" + v + '\n';
+                ";" + angle + '\n';
     }
 }
 
