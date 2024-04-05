@@ -87,11 +87,11 @@ public class Bird {
         this.sinAngleAvg/=this.angleCounter;
         this.cosAngleAvg/=this.angleCounter;
         double sound = randomGenerator.nextDouble(-eta/2, eta/2);
-        this.sinAngleAvg += sound;
-        this.cosAngleAvg += sound;
+//        this.sinAngleAvg += sound;
+//        this.cosAngleAvg += sound;
 
-        this.angle = Math.toDegrees(Math.atan2(this.sinAngleAvg, this.cosAngleAvg));
-//        this.angle = (this.angle + sound)%360;
+        this.angle = Math.toDegrees(Math.atan2(this.sinAngleAvg, this.cosAngleAvg) + sound);
+        this.angle = (this.angle + sound)%360;
         if (this.angle < 0) {
             this.angle+=360;
         }

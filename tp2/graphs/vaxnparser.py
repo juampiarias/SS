@@ -1,6 +1,4 @@
 import configparser
-import csv
-import math
 import pandas as pd
 
 config = configparser.ConfigParser()
@@ -15,7 +13,7 @@ rc = float(config['DEFAULT']['rc'])
 iteration = int(config['DEFAULT']['iter'])
 
 
-filepath = config['DEFAULT']['python'] + 'va_output100_5_'
+filepath = config['DEFAULT']['python'] + 'va_output' + str(n) + '_' + str(int(side)) + '_'
 files = ['001','05','10','15','20',
          '25','30','35','40','45','50']
 
