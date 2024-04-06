@@ -8,9 +8,9 @@ for i, va_list in enumerate(files_list):
     plt.plot(va_list, label=labels[i])
 
 # Adding labels and title
-plt.xlabel('t')
-plt.ylabel('Va')
-plt.title(r"VAxT for different $\rho$")
+plt.xlabel('Tiempo')
+plt.ylabel('Polarización')
+# plt.title(r"VAxT for different $\rho$")
 plt.legend(title=r"$\rho$", bbox_to_anchor=(1.04, 1), borderaxespad=0)
 plt.grid(True)
 
@@ -28,9 +28,9 @@ for va_list in files_list:
     std_list.append(va_std)
 
 plt.errorbar(range(len(files_list)), mean_list, yerr=std_list, fmt='o', capsize=5)
-plt.title(r"VAx$\rho$ Stationary Means")
-plt.xlabel(r"$\rho$")
-plt.ylabel('Va')
+# plt.title(r"VAx$\rho$ Stationary Means")
+plt.xlabel("Densidad")
+plt.ylabel('Polarización')
 plt.xticks(range(len(labels)), labels=labels)
 plt.grid(True)
 plt.show()

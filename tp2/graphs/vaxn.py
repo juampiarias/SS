@@ -10,9 +10,9 @@ for i, va_list in enumerate(files_list):
     plt.plot(va_list, label=labels[i])
 
 # Adding labels and title
-plt.xlabel('t')
-plt.ylabel('Va')
-plt.title(r"VAxT for different $\eta$")
+plt.xlabel('Tiempo')
+plt.ylabel('Polarización')
+# plt.title(r"VAxT for different $\eta$")
 plt.legend(title=r"$\eta$", bbox_to_anchor=(1.04, 1), borderaxespad=0)
 plt.grid(True)
 
@@ -24,16 +24,16 @@ std_list = []
 
 for va_list in files_list:
     # stationary = va_list[-70:]
-    stationary = va_list[-300:]
+    stationary = va_list[-350:]
     va_mean = np.mean(stationary)
     va_std = np.std(stationary)
     mean_list.append(va_mean)
     std_list.append(va_std)
 
 plt.errorbar(range(len(files_list)), mean_list, yerr=std_list, fmt='o', capsize=5)
-plt.title(r"VAx$\eta$ Stationary Means")
-plt.xlabel(r"$\eta$")
-plt.ylabel('Va')
+# plt.title(r"VAx$\eta$ Stationary Means")
+plt.xlabel("Ruido")
+plt.ylabel('Polarización')
 plt.xticks(range(len(files_list)), labels=np.arange(0, 5.5, step=0.5))
 plt.grid(True)
 plt.show()
