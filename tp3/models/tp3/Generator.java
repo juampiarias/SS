@@ -34,7 +34,7 @@ public class Generator {
         double iterations = Double.parseDouble(prop.getProperty("iter"));
         String csvFile = prop.getProperty("java") + prop.getProperty("input");
 
-        Set<GenericParticle> particles = generate(L, centralR, N, v, mass, r);
+        List<GenericParticle> particles = generate(L, centralR, N, v, mass, r);
 
         try (FileWriter writer = new FileWriter(csvFile)){
             writer.write("id;rx;ry;vx;vy;mass;radius\n");
@@ -48,10 +48,10 @@ public class Generator {
         }
     }
 
-    public static Set<GenericParticle> generate (double L, double centralR, int N,
+    public static List<GenericParticle> generate (double L, double centralR, int N,
                                                  double v, double mass, double radius) {
-        Set<GenericParticle> particles = new HashSet<>();
-        GenericParticle central = new GenericParticle(0,L/2, L/2, 0, 0, mass, centralR);
+        List<GenericParticle> particles = new ArrayList<>();
+        GenericParticle central = new GenericParticle(N+1,L/2, L/2, 0, 0, mass, centralR);
         particles.add(central);
         Random rand = new Random();
         double minLim = 0+radius;
@@ -64,7 +64,11 @@ public class Generator {
             double vy = Math.sin(angle)*v;
             double rx = rand.nextDouble(minLim, maxLim);
             double ry = rand.nextDouble(minLim, maxLim);
-            if (particles.add(new GenericParticle(i, rx, ry, vx, vy, mass, radius))) i++;
+            GenericParticle p = new GenericParticle(i, rx, ry, vx, vy, mass, radius);
+            if (!particles.contains(p)) {
+                particles.add(p);
+                i++;
+            }
         }
 
         particles.remove(central);
@@ -98,12 +102,7 @@ public class Generator {
             if (o == null || getClass() != o.getClass()) return false;
             GenericParticle that = (GenericParticle) o;
             double d = Math.sqrt(Math.pow(that.rx - this.rx, 2) + Math.pow(that.ry - this.ry, 2));
-            return d > this.radius + that.radius;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(rx, ry);
+            return d < this.radius + that.radius;
         }
 
         @Override

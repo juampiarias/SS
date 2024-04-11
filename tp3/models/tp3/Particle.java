@@ -59,7 +59,7 @@ public class Particle {
         double drr = (dx * dx) + (dy * dy);
         double dvv = (dvx * dvx) + (dvy * dvy);
         double sigmaSquared = (radius + centralR) * (radius + centralR);
-        double d = (dvr * dvr) - (dvv * dvv)*(drr*drr - sigmaSquared);
+        double d = (dvr * dvr) - ((dvv)*(drr - sigmaSquared));
 
         if (d < 0) {
             return Double.POSITIVE_INFINITY;
@@ -83,7 +83,7 @@ public class Particle {
         double drr = (dx * dx) + (dy * dy);
         double dvv = (dvx * dvx) + (dvy * dvy);
         double sigmaSquared = (radius + p.radius) * (radius + p.radius);
-        double d = (dvr * dvr) - (dvv * dvv)*(drr*drr - sigmaSquared);
+        double d = (dvr * dvr) - ((dvv)*(drr - sigmaSquared));
 
         if (d < 0) {
             return Double.POSITIVE_INFINITY;
@@ -93,20 +93,17 @@ public class Particle {
     }
 
     // simulate collision with vertical wall
-    public void bounceX (double t) {
-        advance(t);
+    public void bounceX () {
         vx = -vx;
     }
 
     // simulate collision with horizontal wall
-    public void bounceY (double t) {
-        advance(t);
+    public void bounceY () {
         vy = -vy;
     }
 
     // simulate collision with central sphere
-    public void bounceSphere (double t) {
-        advance(t);
+    public void bounceSphere () {
         double alpha = Math.atan(vy/vx);
         double vn = vx*Math.cos(alpha) + vy*Math.sin(alpha);
         double vt = vy*Math.cos(alpha) - vx*Math.sin(alpha);
@@ -116,9 +113,7 @@ public class Particle {
     }
 
     // simulate collision with particle p
-    public void bounce (Particle p, double t) {
-        advance(t);
-        p.advance(t);
+    public void bounce (Particle p) {
         double dx = rx - p.rx, dy = ry - p.ry;
         double dvx = vx - p.vx, dvy = vy - p.vy;
 
@@ -129,19 +124,24 @@ public class Particle {
         double J = (2*mass*p.mass*dvr)/(sigma*(mass+p.mass));
         double Jx = (J*dx)/sigma, Jy = (J*dy)/sigma;
 
-        this.vx += (Jx/mass);
-        this.vy += (Jy/mass);
-        p.vx -= (Jx/p.mass);
-        p.vy -= (Jy/p.mass);
+        this.vx -= (Jx/mass);
+        this.vy -= (Jy/mass);
+        p.vx += (Jx/p.mass);
+        p.vy += (Jy/p.mass);
     }
 
     // simulate time passing
-    public void advance (double time) {
-        this.rx += this.vx * time;
-        this.ry += this.vy * time;
+    public void advance (double dt) {
+        this.rx += this.vx * dt;
+        this.ry += this.vy * dt;
     }
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return id + ";" + rx + ";" + ry + ";" + vx + ";" + vy + ";" + mass + ";" + radius + "\n";
     }
 }
