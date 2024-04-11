@@ -107,7 +107,12 @@ public class Particle {
     // simulate collision with central sphere
     public void bounceSphere (double t) {
         advance(t);
-        //TODO: this
+        double alpha = Math.atan(vy/vx);
+        double vn = vx*Math.cos(alpha) + vy*Math.sin(alpha);
+        double vt = vy*Math.cos(alpha) - vx*Math.sin(alpha);
+        vn = -vn;
+        vx = vn*Math.cos(alpha) - vt*Math.sin(alpha);
+        vy = vn*Math.sin(alpha) + vt*Math.cos(alpha);
     }
 
     // simulate collision with particle p
