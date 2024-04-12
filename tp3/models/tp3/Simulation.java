@@ -20,7 +20,7 @@ public class Simulation {
 //        printTimes();
     }
 
-    public void iterate() {
+    public Collision iterate() {
         Collision collision = findCollision();
         Particle p1 = collision.getA();
 
@@ -41,6 +41,7 @@ public class Simulation {
         }
 
         updateCollisions(p1);
+        return collision;
 //        printTimes();
     }
 

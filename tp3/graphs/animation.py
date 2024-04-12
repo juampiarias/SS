@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import matplotlib.animation as animation
 from parser import particles
 import parser
 
@@ -31,3 +32,6 @@ anim = FuncAnimation(fig, animate, init_func=init,
                      frames=numframes, interval=1, blit=True)
 
 plt.show()
+
+writer_video = animation.FFMpegWriter(fps=270)
+# animation.save('balls.mp4', writer=writer_video)

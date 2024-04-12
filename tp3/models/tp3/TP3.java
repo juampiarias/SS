@@ -63,14 +63,34 @@ public class TP3 {
 
         try {
             FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
+            writer.write("t" + simulation.getCurrentTime() + '\n');
+            for (Particle particle : particles) {
+                writer.write(particle.toString());
+            }
 
             for (int i = 0; i < iterations; i++) {
-                writer.write("t" + simulation.getCurrentTime() + '\n');
+                writer.write("t" + simulation.getCurrentTime() + ' ');
+                Collision collision = simulation.iterate();
+                Particle p1 = collision.getA();
+                switch (collision.getType()) {
+                    case Particle -> {
+                        Particle p2 = collision.getB();
+                        writer.write(p1.getId() + " " + p2.getId() + '\n');
+                    }
+                    case VerticalWall -> {
+                        writer.write(p1.getId() + " " + (N) + '\n');
+                    }
+                    case HorizontalWall -> {
+                        writer.write(p1.getId() + " " + (N+1) + '\n');
+                    }
+                    case CentralSphere -> {
+                        writer.write(p1.getId() + " " + (N+2) + '\n');
+                    }
+                }
 //                System.out.println(simulation.getCurrentTime());
                 for (Particle particle : particles) {
                     writer.write(particle.toString());
                 }
-                simulation.iterate();
             }
 
             writer.flush();
