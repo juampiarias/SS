@@ -30,10 +30,9 @@ else:
     fps += aux
 
 patches = []
-for p in particles[0]:
-    patches.append(plt.Circle(xy=(p[1],p[2]), radius=p[6], animated=True))
-
-center = [plt.Circle(xy=(parser.side/2, parser.side/2), radius=parser.centralR, color='y')]
+patches.append(plt.Circle(xy=(particles[0][0][1], particles[0][0][2]), radius=particles[0][0][6], color='y', animated=True))
+for i in range(1, len(particles[0])):
+    patches.append(plt.Circle(xy=(particles[0][i][1], particles[0][i][2]), radius=particles[0][i][6], animated=True))
 
 fig = plt.figure()
 ax = plt.axes(xlim=(0, parser.side), ylim=(0, parser.side))
@@ -42,14 +41,13 @@ ax = plt.axes(xlim=(0, parser.side), ylim=(0, parser.side))
 def init():
     for p in patches:
         ax.add_patch(p)
-    ax.add_patch(center[0])
-    return patches + center
+    return patches
 
 #
 def animate(i):
     for patch, p in zip(patches, particles[fps[i]]):
         patch.set_center((p[1],p[2]))
-    return patches + center
+    return patches
 
 #
 numframes = len(fps)

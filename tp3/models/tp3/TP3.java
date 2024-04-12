@@ -29,6 +29,7 @@ public class TP3 {
         double L = Double.parseDouble(prop.getProperty("l"));
         double v = Double.parseDouble(prop.getProperty("v"));
         double centralR = Double.parseDouble(prop.getProperty("centralR"));
+        double centralMass = Double.parseDouble(prop.getProperty("centralMass"));
         double r = Double.parseDouble(prop.getProperty("r"));
         double mass = Double.parseDouble(prop.getProperty("mass"));
         double iterations = Double.parseDouble(prop.getProperty("iter"));
@@ -40,6 +41,21 @@ public class TP3 {
 
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             br.readLine();
+            //Add Immovable Object
+            if (Double.compare(0.0, centralMass) == 0  && (line = br.readLine()) != null) {
+                String[] data = line.split(splitter);
+                Particle particle =
+                        new ImmovableSphere(Integer.parseInt(data[0]),
+                                Double.parseDouble(data[1]),
+                                Double.parseDouble(data[2]),
+                                Double.parseDouble(data[3]),
+                                Double.parseDouble(data[4]),
+                                Double.parseDouble(data[5]),
+                                Double.parseDouble(data[6]),
+                                L);
+                particles.add(particle);
+            }
+
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(splitter);
                 Particle particle =
@@ -50,8 +66,7 @@ public class TP3 {
                                 Double.parseDouble(data[4]),
                                 Double.parseDouble(data[5]),
                                 Double.parseDouble(data[6]),
-                                L,
-                                centralR);
+                                L);
                 particles.add(particle);
             }
         } catch (IOException ex) {
@@ -83,11 +98,7 @@ public class TP3 {
                     case HorizontalWall -> {
                         writer.write(p1.getId() + " " + (N+1) + '\n');
                     }
-                    case CentralSphere -> {
-                        writer.write(p1.getId() + " " + (N+2) + '\n');
-                    }
                 }
-//                System.out.println(simulation.getCurrentTime());
                 for (Particle particle : particles) {
                     writer.write(particle.toString());
                 }

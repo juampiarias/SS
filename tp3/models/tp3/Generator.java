@@ -29,12 +29,12 @@ public class Generator {
         double L = Double.parseDouble(prop.getProperty("l"));
         double v = Double.parseDouble(prop.getProperty("v"));
         double centralR = Double.parseDouble(prop.getProperty("centralR"));
+        double centralMass = Double.parseDouble(prop.getProperty("centralMass"));
         double r = Double.parseDouble(prop.getProperty("r"));
         double mass = Double.parseDouble(prop.getProperty("mass"));
-        double iterations = Double.parseDouble(prop.getProperty("iter"));
         String csvFile = prop.getProperty("java") + prop.getProperty("input");
 
-        List<GenericParticle> particles = generate(L, centralR, N, v, mass, r);
+        List<GenericParticle> particles = generate(L, centralR, centralMass, N, v, mass, r);
 
         try (FileWriter writer = new FileWriter(csvFile)){
             writer.write("id;rx;ry;vx;vy;mass;radius\n");
@@ -48,17 +48,17 @@ public class Generator {
         }
     }
 
-    public static List<GenericParticle> generate (double L, double centralR, int N,
+    public static List<GenericParticle> generate (double L, double centralR, double centralMass, int N,
                                                  double v, double mass, double radius) {
         List<GenericParticle> particles = new ArrayList<>();
-        GenericParticle central = new GenericParticle(N+1,L/2, L/2, 0, 0, mass, centralR);
-        particles.add(central);
         Random rand = new Random();
         double minLim = 0+radius;
         double maxLim = L-radius;
         int i = 0;
+        GenericParticle central = new GenericParticle(i++,L/2, L/2, 0, 0, centralMass, centralR);
+        particles.add(central);
 
-        while (particles.size() < N+1) {
+        while (particles.size() < N) {
             double angle = rand.nextDouble(0, 2*Math.PI);
             double vx = Math.cos(angle)*v;
             double vy = Math.sin(angle)*v;
@@ -70,8 +70,6 @@ public class Generator {
                 i++;
             }
         }
-
-        particles.remove(central);
 
         return particles;
     }

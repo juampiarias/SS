@@ -6,18 +6,18 @@ counter = 0
 delta_t = 0.01
 time = 0.01
 counts = []
-ids = {1}
-ids.remove(1)
+ids = {0}
+ids.remove(0)
 
 for c, t in zip(collisions, times):
     if t >= time:
         counts.append(counter)
         time += delta_t
 
-    if c[1] == parser.n+2:
-        if c[0] not in ids:
+    if c[0] == 0:
+        if c[1] not in ids:
             counter += 1
-            ids.add(c[0])
+            ids.add(c[1])
 
 
 plt.plot([i * delta_t for i in range(int(delta_t / delta_t), int(time / delta_t))], counts)

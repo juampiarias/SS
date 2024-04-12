@@ -12,7 +12,7 @@ for c, t in zip(collisions, times):
         counts.append(counter)
         time += delta_t
 
-    if c[1] == parser.n+2:
+    if c[0] == 0:
         counter += 1
 
 plt.plot([i * delta_t for i in range(int(delta_t / delta_t), int(time / delta_t))], counts)

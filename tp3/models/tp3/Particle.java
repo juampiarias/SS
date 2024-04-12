@@ -2,17 +2,16 @@ package tp3;
 
 public class Particle {
 
-    private final int id;
-    private double rx;
-    private double ry;
-    private double vx;
-    private double vy;
-    private final double mass;
-    private final double radius;
-    private final double L;
-    private final double centralR;
+    protected final int id;
+    protected double rx;
+    protected double ry;
+    protected double vx;
+    protected double vy;
+    protected final double mass;
+    protected final double radius;
+    protected final double L;
 
-    Particle (int id, double rx, double ry, double vx, double vy, double mass, double radius, double L, double centralR) {
+    Particle (int id, double rx, double ry, double vx, double vy, double mass, double radius, double L) {
         this.id = id;
         this.rx = rx;
         this.ry = ry;
@@ -21,7 +20,6 @@ public class Particle {
         this.mass = mass;
         this.radius = radius;
         this.L = L;
-        this.centralR = centralR;
     }
 
     // Time collision with vertical wall
@@ -42,31 +40,6 @@ public class Particle {
             return (L - radius - ry) / vy;
 
         return Double.POSITIVE_INFINITY;
-    }
-
-    // Time collision with central sphere
-    public double collidesSphere () {
-        double centerX = L/2, centerY = L/2;
-        double dx = rx - centerX, dy = ry - centerY;
-        double dvx = vx, dvy = vy;
-
-        double dvr = (dvx * dx) + (dvy * dy);
-
-        if (dvr >= 0) {
-            return Double.POSITIVE_INFINITY;
-        }
-
-        double drr = (dx * dx) + (dy * dy);
-        double dvv = (dvx * dvx) + (dvy * dvy);
-        double sigmaSquared = (radius + centralR) * (radius + centralR);
-        double d = (dvr * dvr) - ((dvv)*(drr - sigmaSquared));
-
-        if (d < 0) {
-            return Double.POSITIVE_INFINITY;
-        } else {
-            return -(dvr + Math.sqrt(d)) / dvv;
-        }
-
     }
 
     // Time collision with particle
@@ -100,23 +73,6 @@ public class Particle {
     // simulate collision with horizontal wall
     public void bounceY () {
         vy = -vy;
-    }
-
-    // simulate collision with central sphere
-    public void bounceSphere () {
-        double centerX = L/2, centerY = L/2;
-        double dx = rx - centerX, dy = ry - centerY;
-        double dvx = vx, dvy = vy;
-
-        double dvr = (dvx * dx) + (dvy * dy);
-
-        double sigma = radius + centralR;
-
-        double J = (2*mass*dvr)/(sigma);
-        double Jx = (J*dx)/sigma, Jy = (J*dy)/sigma;
-
-        this.vx -= (Jx/mass);
-        this.vy -= (Jy/mass);
     }
 
     // simulate collision with particle p

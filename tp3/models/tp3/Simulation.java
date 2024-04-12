@@ -10,21 +10,18 @@ public class Simulation {
     private double currentTime;
 
     Simulation(int N, List<Particle> particles) {
-        // N+3, N particles, vertical wall, horizontal wall, central sphere
-        this.collisionTimes = new Double[N][N+3];
+        // N+2, N particles, vertical wall, horizontal wall
+        this.collisionTimes = new Double[N][N+2];
         this.particles = particles;
         this.currentTime = 0.0;
         this.N = N;
 
         fillCollisionTimes();
-//        printTimes();
     }
 
     public Collision iterate() {
         Collision collision = findCollision();
         Particle p1 = collision.getA();
-
-        System.out.println(collision.getT() + "     " + currentTime);
 
         advance(collision.getT()-currentTime);
         currentTime = collision.getT();
@@ -37,12 +34,10 @@ public class Simulation {
             }
             case VerticalWall -> p1.bounceX();
             case HorizontalWall -> p1.bounceY();
-            case CentralSphere -> p1.bounceSphere();
         }
 
         updateCollisions(p1);
         return collision;
-//        printTimes();
     }
 
     void fillCollisionTimes () {
@@ -58,8 +53,6 @@ public class Simulation {
             }
             collisionTimes[i][size] = p1.collidesX();
             collisionTimes[i][size+1] = p1.collidesY();
-            collisionTimes[i][size+2] = p1.collidesSphere();
-//            collisionTimes[i][size+2] = Double.POSITIVE_INFINITY;
         }
 
     }
@@ -93,15 +86,6 @@ public class Simulation {
                 collision.setB(null);
                 collision.setType(CollisionType.HorizontalWall);
             }
-            if (collisionTimes[i][size+2] < time) {
-                time = collisionTimes[i][size+2];
-                collision.setT(time);
-                collision.setA(particles.get(i));
-                collision.setB(null);
-                collision.setType(CollisionType.CentralSphere);
-            }
-
-
         }
 
         return collision;
@@ -123,7 +107,6 @@ public class Simulation {
         }
         collisionTimes[aux][size] = p.collidesX() + currentTime;
         collisionTimes[aux][size+1] = p.collidesY() + currentTime;
-        collisionTimes[aux][size+2] = p.collidesSphere() + currentTime;
     }
 
     void advance (double dt) {
