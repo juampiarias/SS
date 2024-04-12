@@ -69,8 +69,8 @@ public class TP3 {
             }
 
             for (int i = 0; i < iterations; i++) {
-                writer.write("t" + simulation.getCurrentTime() + ' ');
                 Collision collision = simulation.iterate();
+                writer.write("t" + simulation.getCurrentTime() + ' ');
                 Particle p1 = collision.getA();
                 switch (collision.getType()) {
                     case Particle -> {
