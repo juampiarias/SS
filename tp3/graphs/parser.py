@@ -19,6 +19,8 @@ iteration = int(config['DEFAULT']['iter'])
 
 def parse_csv(file_name):
     times_list = []
+    times = []
+    collisions = []
 
     with(open(file_name, 'r') as file):
         reader = csv.reader(file, delimiter=';')
@@ -27,6 +29,14 @@ def parse_csv(file_name):
         for row in reader:
             if row:
                 if row[0].startswith('t'):
+                    numbers = row[0].split()
+                    new_s = numbers[0][1:]
+                    times.append(float(new_s))
+                    if len(numbers) > 1:
+                        collisions.append([int(numbers[1]), int(numbers[2])])
+                    # index_of_space = row[0].find(' ')
+                    # new_s = str(row[0][1:index_of_space])
+                    # times.append(float(new_s))
                     if coordinates:
                         times_list.append(coordinates)
                         coordinates = []
@@ -43,7 +53,7 @@ def parse_csv(file_name):
         if coordinates:
             times_list.append(coordinates)
 
-    return times_list
+    return times_list, times, collisions
 
 
-particles = parse_csv(filename)
+particles, times, collisions = parse_csv(filename)
