@@ -3,6 +3,7 @@ import csv
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
 config = configparser.ConfigParser()
 config.read('../configs/app.config')
@@ -48,29 +49,39 @@ y = []
 for i in range(1,26):
     file = 'output' + str(i) + 'dcm.csv'
     times, coordinates, dcm, adjusted_times = parse_times(config['DEFAULT']['python'] + file)
-    plt.plot(adjusted_times, dcm)
+    # if i < 3:
+    #     plt.plot(adjusted_times, dcm)
     dcm = dcm[:70]
     dcms.append(dcm)
-    y = adjusted_times[:70]
+    x = adjusted_times[:70]
 
-for i,t in enumerate(y):
-    if t == 0.2:
-        print(y)
+# # Agregar etiquetas de ejes y título
+# plt.xlabel('Tiempo [s]')
+# plt.ylabel('$Z^2$ [$m^2$]')
+# plt.grid(True)
+# # Mostrar el gráfico
+# plt.show()
 
-
-# Agregar etiquetas de ejes y título
-plt.xlabel('Tiempo [s]')
-plt.ylabel('Z*Z')
-plt.grid(True)
-# Mostrar el gráfico
-plt.show()
 
 dcms = np.array(dcms)
-x = np.mean(dcms, 0)
-plt.plot(y, x)
+y = np.mean(dcms, 0)
+
+fit_x = x[:20]
+fit_x = [[x] for x in fit_x]
+fit_y = y[:20]
+
+reg = LinearRegression()
+reg.fit(fit_x, fit_y)
+new_y = reg.predict(fit_x)
+
+eq = 'm = ' + str(reg.coef_)
+#
+plt.plot(x, y)
+plt.plot(fit_x, new_y, label=eq)
 # Agregar etiquetas de ejes y título
 plt.xlabel('Tiempo [s]')
-plt.ylabel('Z*Z')
+plt.ylabel('DCM [$m^2$]')
+plt.legend()
 plt.grid(True)
 # Mostrar el gráfico
 plt.show()
