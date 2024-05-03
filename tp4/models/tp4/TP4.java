@@ -67,16 +67,20 @@ public class TP4 {
 
         Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy);
 
-        double dt = 60*60*24;
+        double dt = 60;
+        int j=0;
 
         try {
             FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
 
-            for (int i = 0; i < 365*2; i++) {
-                writer.write("Day ");
-                writer.write(String.valueOf(i));
-                writer.write('\n');
-                writer.write(simulation.toString());
+            for (int i = 0; i < 365*24*60; i++) {
+                if(i%(60*24) == 0) {
+                    writer.write("Day ");
+                    writer.write(String.valueOf(j++));
+                    writer.write('\n');
+                    writer.write(simulation.toString());
+                    System.out.println(j);
+                }
                 simulation.iterate(dt);
             }
 

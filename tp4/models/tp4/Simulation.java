@@ -46,18 +46,19 @@ public class Simulation {
 
         double d = Math.sqrt(Math.pow(earth.rx, 2) + Math.pow(earth.ry, 2));
 
-        //TODO: aca es rx o -rx??
-        double etx = -(earth.ry/d);
-        double ety = earth.rx/d;
+        double cos = (earth.rx/d);
+        double sen = earth.ry/d;
 
         double x = earth.rx*distanceEarthShip/d;
         double y = earth.ry*distanceEarthShip/d;
 
-        double vt = earth.vx*etx + earth.vy*ety;
-        vt += vOrbit + vShip;
+        double vtx = earth.vx*(-sen) + earth.vy*cos;
+        double vty = -earth.vx*sen*cos + earth.vy*cos*cos;
+        double v0x = (vOrbit + vShip)*(-sen);
+        double v0y = (vOrbit + vShip)*cos;
 
-        double vx = vt*etx;
-        double vy = vt*ety;
+        double vx = vtx+v0x;
+        double vy = vty+v0y;
 
         return new Particle(g, 2*ten(5), earth.rx+x, earth.ry+y, vx, vy);
 
