@@ -7,7 +7,7 @@ config = configparser.ConfigParser()
 config.read('../configs/oscillator.config')
 
 # file a leer
-filename = config['DEFAULT']['python'] + config['DEFAULT']['output']
+filename = config['DEFAULT']['python'] + 'oscillation_2.csv'
 
 # Read the CSV file into a DataFrame
 df = pd.read_csv(filename, delimiter=';')
@@ -19,10 +19,10 @@ gear = df['gear'].tolist()
 beeman = df['beeman'].tolist()
 verlet = df['verlet'].tolist()
 
-plt.plot(times, analytic, label="Analitico")
-plt.plot(times, gear, label="Gear Predict-Correct")
-plt.plot(times, beeman, label="Beeman")
-plt.plot(times, verlet, label="Verlet")
+plt.plot(times[1:], analytic[1:], label="Analitico")
+plt.plot(times[1:], gear[:-1], label="Gear Predict-Correct")
+plt.plot(times[1:], beeman[:-1], label="Beeman")
+plt.plot(times[1:], verlet[:-1], label="Verlet")
 
 # Agregar etiquetas de ejes y título
 plt.xlabel('Tiempo [s]')
@@ -32,14 +32,14 @@ plt.legend()
 # Mostrar el gráfico
 plt.show()
 
-mse_gear = ((np.array(gear) - np.array(analytic))**2).mean(axis=0)
-mse_beeman = ((np.array(beeman) - np.array(analytic))**2).mean(axis=0)
-mse_verlet = ((np.array(verlet) - np.array(analytic))**2).mean(axis=0)
-print(mse_gear, mse_beeman, mse_verlet)
+# mse_gear = ((np.array(gear) - np.array(analytic))**2).mean(axis=0)
+# mse_beeman = ((np.array(beeman) - np.array(analytic))**2).mean(axis=0)
+# mse_verlet = ((np.array(verlet) - np.array(analytic))**2).mean(axis=0)
+# print(mse_gear, mse_beeman, mse_verlet)
 
 
-range_1 = 100
-range_2 = 110
+range_1 = 110
+range_2 = 112
 snapshot_times = times[range_1:range_2]
 snapshot_analytic = analytic[range_1:range_2]
 snapshot_gear = gear[range_1:range_2]
@@ -96,21 +96,22 @@ for file in files:
     beeman = df['beeman'].tolist()
     verlet = df['verlet'].tolist()
 
-    mse_gear = ((np.array(gear) - np.array(analytic))**2).mean(axis=0)
-    mse_beeman = ((np.array(beeman) - np.array(analytic))**2).mean(axis=0)
-    mse_verlet = ((np.array(verlet) - np.array(analytic))**2).mean(axis=0)
+    mse_gear = ((np.array(gear[:-1]) - np.array(analytic[1:]))**2).mean(axis=0)
+    mse_beeman = ((np.array(beeman[:-1]) - np.array(analytic[1:]))**2).mean(axis=0)
+    mse_verlet = ((np.array(verlet[:-1]) - np.array(analytic[1:]))**2).mean(axis=0)
     # print(mse_gear, mse_beeman, mse_beeman)
 
-    mse_gear, mse_beeman, mse_verlet = mse_calc(analytic, verlet, beeman, gear)
+    # mse_gear, mse_beeman, mse_verlet = mse_calc(analytic, verlet, beeman, gear)
+    # print(mse_gear, mse_beeman, mse_beeman)
 
     gear_mse.append(mse_gear)
     beeman_mse.append(mse_beeman)
     verlet_mse.append(mse_verlet)
 
 
-plt.plot(error, gear_mse, label="Gear Predict-Correct", marker='o')
-plt.plot(error, beeman_mse, label="Beeman", marker='o')
-plt.plot(error, verlet_mse, label="Verlet", marker='o')
+plt.scatter(error, gear_mse, label="Gear Predict-Correct", marker='o')
+plt.scatter(error, beeman_mse, label="Beeman", marker='o')
+plt.scatter(error, verlet_mse, label="Verlet", marker='o')
 
 # Agregar etiquetas de ejes y título
 plt.xlabel('Delta T [s]')

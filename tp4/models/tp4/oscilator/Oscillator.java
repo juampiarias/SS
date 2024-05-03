@@ -24,41 +24,46 @@ public class Oscillator {
         double gamma = Double.parseDouble(prop.getProperty("gamma"));
         double tf = Double.parseDouble(prop.getProperty("tf"));
         double r0 = Double.parseDouble(prop.getProperty("r0"));
-        double dt = Double.parseDouble(prop.getProperty("dt"));
         double v0 = -gamma*0.5/m;
 
-        List<Algorithm> algs = new ArrayList<Algorithm>();
-        algs.add(new Gear(r0, v0, m, k, gamma, dt));
-        algs.add(new Beeman(r0, v0, m, k, gamma, dt));
-        algs.add(new Verlet(r0, v0, m, k, gamma, dt));
+        double dt = 0.01;
 
-        try {
-            FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
-            writer.write("time;analytic;gear;beeman;verlet\n");
+        for (int i=2; i<7; i++) {
+            List<Algorithm> algs = new ArrayList<Algorithm>();
+            algs.add(new Gear(r0, v0, m, k, gamma, dt));
+            algs.add(new Beeman(r0, v0, m, k, gamma, dt));
+            algs.add(new Verlet(r0, v0, m, k, gamma, dt));
+            try {
+                FileWriter writer = new FileWriter(prop.getProperty("java") + "oscillation_" + i + ".csv");
+                writer.write("time;analytic;gear;beeman;verlet\n");
 
-            for (double time = 0.0; time < tf; time += dt) {
-                for (Algorithm alg : algs) {
-                    alg.iterate();
-                }
-                writer.write(String.valueOf(time));
-                writer.write(";");
-                writer.write(String.valueOf(AnalyticOscillator(m, k, gamma, time)));
-
-                for (Algorithm alg : algs) {
+                for (double time = 0.0; time < tf; time += dt) {
+                    for (Algorithm alg : algs) {
+                        alg.iterate();
+                    }
+                    writer.write(String.valueOf(time));
                     writer.write(";");
-                    writer.write(String.valueOf(alg.getR()));
-                }
-                writer.write("\n");
-            }
-            writer.flush();
+                    writer.write(String.valueOf(AnalyticOscillator(m, k, gamma, time)));
 
-        } catch (IOException e) {
-            e.printStackTrace();
+                    for (Algorithm alg : algs) {
+                        writer.write(";");
+                        writer.write(String.valueOf(alg.getR()));
+                    }
+                    writer.write("\n");
+                }
+                writer.flush();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            dt/=10;
+
         }
     }
 
 
     public static double AnalyticOscillator(double m, double k, double gamma, double t) {
-        return Math.exp(-gamma*t*0.5/m) * Math.cos(Math.sqrt(k/m - gamma*gamma/(4*m*m)) * t);
+        return Math.exp(-t*gamma/(2*m)) * Math.cos(Math.pow(k/m - (Math.pow(gamma,2)/(4*Math.pow(m,2))), 0.5) * t);
     }
 }

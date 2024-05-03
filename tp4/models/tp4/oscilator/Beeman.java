@@ -23,9 +23,9 @@ public class Beeman implements Algorithm{
         this.r = r;
         this.v = v;
         this.a = OscillatorForce(r, v, m, k, gamma);
-        this.rBefore = EulerPosition(r, v, a, -dt);
         this.vBefore = EulerVelocity(v, a, -dt);
-        this.aBefore = OscillatorForce(rBefore, vBefore, m, k, gamma)/m;
+        this.rBefore = EulerPosition(r, v, a, -dt);
+        this.aBefore = OscillatorForce(rBefore, vBefore, m, k, gamma);
     }
 
     @Override

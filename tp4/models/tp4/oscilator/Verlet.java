@@ -24,19 +24,13 @@ public class Verlet implements Algorithm{
         this.rBefore = EulerPosition(r, v, a, -dt);
     }
 
-    // X-1  X0  X1  X2?
-    //      V0  V1? x2-x0/2dt
-    //      A0  A1?
-
     @Override
     public void iterate() {
         double rAfter = 2*r - rBefore + dt*dt*a;
-//        double vAfter = EulerVelocity(v, a, dt);
-        double vAfter = (rAfter - r)/dt;
+        v = (rAfter - rBefore)/(2*dt);
 
         rBefore = r;
         r = rAfter;
-        v = vAfter;
         a = OscillatorForce(r, v, m, k, gamma);
     }
 
