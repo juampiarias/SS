@@ -34,10 +34,14 @@ public class TP4 {
         double mrx=0, mry=0, mvx=0, mvy=0, erx=0, ery=0, evx=0, evy=0;
         String line;
         String splitter = ",";
+        int day = 50;
 
         String csvFile = prop.getProperty("java") + "data/mars.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             br.readLine();
+            for(int i=0; i<day; i++) {
+                br.readLine();
+            }
             if ((line = br.readLine()) != null) {
                 String[] data = line.split(splitter);
                 mrx = Double.parseDouble(data[2]);
@@ -53,6 +57,9 @@ public class TP4 {
         csvFile = prop.getProperty("java") + "data/earth.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             br.readLine();
+            for(int i=0; i<day; i++) {
+                br.readLine();
+            }
             if ((line = br.readLine()) != null) {
                 String[] data = line.split(splitter);
                 erx = Double.parseDouble(data[2]);
@@ -65,7 +72,12 @@ public class TP4 {
             return;
         }
 
-        Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy);
+        double distanceEarthShip = 1500;
+        double vOrbit = 7.12;
+        double vShip = 8;
+
+        Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy,
+                                                distanceEarthShip, vOrbit, vShip);
 
         double dt = 60;
         int j=0;
@@ -73,7 +85,7 @@ public class TP4 {
         try {
             FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
 
-            for (int i = 0; i < 365*24*60; i++) {
+            for (int i = 0; i < 4*365*24*60; i++) {
                 if(i%(60*24) == 0) {
                     writer.write("Day ");
                     writer.write(String.valueOf(j++));

@@ -10,17 +10,15 @@ public class Simulation {
     Particle sun;
     double g;
 
-    Simulation(double mrx, double mry, double mvx, double mvy, double erx, double ery, double evx, double evy) {
+    Simulation(double mrx, double mry, double mvx, double mvy, double erx, double ery, double evx, double evy,
+               double distanceEarthShip, double vOrbit, double vShip) {
         g = 6.693*ten(-20);
 
         sun = new Sun(g, 1988500*ten(24), 0, 0, 0, 0);
         mars = new Particle(g, 6.4171*ten(23), mrx, mry, mvx, mvy);
         earth = new Particle(g, 5.97219*ten(24), erx, ery, evx, evy);
-        ship = initializeShip();
+        ship = initializeShip(distanceEarthShip, vOrbit, vShip);
 
-    }
-
-    void iterate(double dt) {
         sun.interact(earth);
         sun.interact(mars);
         sun.interact(ship);
@@ -28,39 +26,55 @@ public class Simulation {
         earth.interact(ship);
         mars.interact(ship);
 
-        sun.actualize(dt);
-        earth.actualize(dt);
-        mars.actualize(dt);
-        ship.actualize(dt);
+        sun.setA();
+        earth.setA();
+        mars.setA();
+        ship.setA();
+
+    }
+
+    void iterate(double dt) {
+        sun.gear_predict(dt);
+        earth.gear_predict(dt);
+        mars.gear_predict(dt);
+        ship.gear_predict(dt);
+
+        sun.interact(earth);
+        sun.interact(mars);
+        sun.interact(ship);
+        earth.interact(mars);
+        earth.interact(ship);
+        mars.interact(ship);
+
+        sun.gear_correct(dt);
+        earth.gear_correct(dt);
+        mars.gear_correct(dt);
+        ship.gear_correct(dt);
     }
 
     double ten(double x) {
         return Math.pow(10,x);
     }
 
-    Particle initializeShip () {
-        double distanceEarthShip = 1500;
-        double vOrbit = 7.12;
-        double vShip = 8;
+    Particle initializeShip (double distanceEarthShip, double vOrbit, double vShip) {
 
+        double d = Math.sqrt(Math.pow(earth.rx[0], 2) + Math.pow(earth.ry[0], 2));
 
-        double d = Math.sqrt(Math.pow(earth.rx, 2) + Math.pow(earth.ry, 2));
+        double cos = (earth.rx[0]/d);
+        double sen = earth.ry[0]/d;
 
-        double cos = (earth.rx/d);
-        double sen = earth.ry/d;
+        double x = earth.rx[0]*distanceEarthShip/d;
+        double y = earth.ry[0]*distanceEarthShip/d;
 
-        double x = earth.rx*distanceEarthShip/d;
-        double y = earth.ry*distanceEarthShip/d;
-
-        double vtx = earth.vx*(-sen) + earth.vy*cos;
-        double vty = -earth.vx*sen*cos + earth.vy*cos*cos;
+        double vtx = earth.rx[1]*(-sen) + earth.ry[1]*cos;
+        double vty = -earth.rx[1]*sen*cos + earth.ry[1]*cos*cos;
         double v0x = (vOrbit + vShip)*(-sen);
         double v0y = (vOrbit + vShip)*cos;
 
         double vx = vtx+v0x;
         double vy = vty+v0y;
 
-        return new Particle(g, 2*ten(5), earth.rx+x, earth.ry+y, vx, vy);
+        return new Particle(g, 2*ten(5), earth.rx[0]+x, earth.ry[0]+y, vx, vy);
 
     }
 

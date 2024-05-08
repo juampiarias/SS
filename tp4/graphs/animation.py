@@ -13,7 +13,7 @@ filename = config['DEFAULT']['python'] + config['DEFAULT']['output']
 
 particles = parser.parse_csv(filename)
 
-side = 1e9/2
+side = 1e9/4
 radius = 1e7
 
 fig = plt.figure()
@@ -21,9 +21,10 @@ ax = plt.axes()
 ax = plt.axes(xlim=(-side, side), ylim=(-side, side))
 
 patches = []
+colors = ['y', 'g', 'r', 'b']
 
 for i in range(len(particles[0])):
-    patches.append(plt.Circle(xy=(particles[0][i][1], particles[0][i][2]), radius=radius, animated=True))
+    patches.append(plt.Circle(xy=(particles[0][i][1], particles[0][i][2]), radius=radius, animated=True, color=colors[i]))
 
 
 def init():
