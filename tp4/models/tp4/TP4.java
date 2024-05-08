@@ -22,83 +22,74 @@ public class TP4 {
             return;
         }
 
-//        int N = Integer.parseInt(prop.getProperty("n"));
-//        double L = Double.parseDouble(prop.getProperty("l"));
-//        double v = Double.parseDouble(prop.getProperty("v"));
-//        double centralR = Double.parseDouble(prop.getProperty("centralR"));
-//        double centralMass = Double.parseDouble(prop.getProperty("centralMass"));
-//        double r = Double.parseDouble(prop.getProperty("r"));
-//        double mass = Double.parseDouble(prop.getProperty("mass"));
-//        double iterations = Double.parseDouble(prop.getProperty("iter"));
-
         double mrx=0, mry=0, mvx=0, mvy=0, erx=0, ery=0, evx=0, evy=0;
-        String line;
+        String marsLine;
+        String earthLine;
         String splitter = ",";
-        int day = 50;
 
-        String csvFile = prop.getProperty("java") + "data/mars.csv";
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            br.readLine();
-            for(int i=0; i<day; i++) {
-                br.readLine();
-            }
-            if ((line = br.readLine()) != null) {
-                String[] data = line.split(splitter);
-                mrx = Double.parseDouble(data[2]);
-                mry = Double.parseDouble(data[3]);
-                mvx = Double.parseDouble(data[5]);
-                mvy = Double.parseDouble(data[6]);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return;
-        }
+        String marsCsv = prop.getProperty("marsData");
+        String earthCsv = prop.getProperty("earthData");
+        String marsFile = prop.getProperty("java") + marsCsv;
+        String earthFile = prop.getProperty("java") + earthCsv;
+        BufferedReader marsBr, earthBr;
+        int start = Integer.parseInt(prop.getProperty("startDate"));
+        int end = Integer.parseInt(prop.getProperty("endDate"));
+        int dt = Integer.parseInt(prop.getProperty("dt"));
+        int simYears = Integer.parseInt(prop.getProperty("simYears"));
+        int sim = simYears*365*24*60*60/dt;
+        int print = 24*60*60/dt;
 
-        csvFile = prop.getProperty("java") + "data/earth.csv";
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            br.readLine();
-            for(int i=0; i<day; i++) {
-                br.readLine();
-            }
-            if ((line = br.readLine()) != null) {
-                String[] data = line.split(splitter);
-                erx = Double.parseDouble(data[2]);
-                ery = Double.parseDouble(data[3]);
-                evx = Double.parseDouble(data[5]);
-                evy = Double.parseDouble(data[6]);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return;
-        }
 
-        double distanceEarthShip = 1500;
-        double vOrbit = 7.12;
-        double vShip = 8;
-
-        Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy,
-                                                distanceEarthShip, vOrbit, vShip);
-
-        double dt = 60;
-        int j=0;
 
         try {
-            FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output"));
+            marsBr = new BufferedReader(new FileReader(marsFile));
+            earthBr = new BufferedReader(new FileReader(earthFile));
+            marsBr.readLine();
+            earthBr.readLine();
+            for (int i=0; i<start; i++) {
+                marsBr.readLine();
+                earthBr.readLine();
+            }
+            for (int i=start; i<end; i++) {
+                if ((marsLine = marsBr.readLine()) != null &&
+                    (earthLine = earthBr.readLine()) != null) {
+                    String[] marsData = marsLine.split(splitter);
+                    String[] earthData = earthLine.split(splitter);
+                    mrx = Double.parseDouble(marsData[2]);
+                    mry = Double.parseDouble(marsData[3]);
+                    mvx = Double.parseDouble(marsData[5]);
+                    mvy = Double.parseDouble(marsData[6]);
+                    erx = Double.parseDouble(earthData[2]);
+                    ery = Double.parseDouble(earthData[3]);
+                    evx = Double.parseDouble(earthData[5]);
+                    evy = Double.parseDouble(earthData[6]);
 
-            for (int i = 0; i < 4*365*24*60; i++) {
-                if(i%(60*24) == 0) {
-                    writer.write("Day ");
-                    writer.write(String.valueOf(j++));
-                    writer.write('\n');
-                    writer.write(simulation.toString());
-                    System.out.println(j);
+                    double distanceEarthShip = 1500;
+                    double vOrbit = 7.12;
+                    double vShip = 8;
+
+                    Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy,
+                            distanceEarthShip, vOrbit, vShip);
+
+                    FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output") + i + ".csv");
+                    System.out.println("Simulation" + i);
+                    for (int j = 0, k = 0; j < sim; j++) {
+                        if(j%(print) == 0) {
+                            writer.write("Day ");
+                            writer.write(String.valueOf(k++));
+                            writer.write('\n');
+                            writer.write(simulation.toString());
+                        }
+                        simulation.iterate(dt);
+                    }
+                    writer.flush();
+
                 }
-                simulation.iterate(dt);
             }
 
-            writer.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
+
     }
 }

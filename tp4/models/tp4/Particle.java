@@ -28,6 +28,8 @@ public class Particle {
     void setA() {
         rx[2] = fx/m;
         ry[2] = fy/m;
+        fx = 0.0;
+        fy = 0.0;
     }
 
     void add_Fx(double fx) {
