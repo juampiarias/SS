@@ -2,6 +2,8 @@ package tp4;
 
 import java.io.*;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TP4 {
 
@@ -50,6 +52,9 @@ public class TP4 {
                 marsBr.readLine();
                 earthBr.readLine();
             }
+
+            ExecutorService executor = Executors.newFixedThreadPool(5);
+
             for (int i=start; i<end; i++) {
                 if ((marsLine = marsBr.readLine()) != null &&
                     (earthLine = earthBr.readLine()) != null) {
@@ -68,28 +73,83 @@ public class TP4 {
                     double vOrbit = 7.12;
                     double vShip = 8;
 
-                    Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy,
-                            distanceEarthShip, vOrbit, vShip);
+                    Task task = new Task(i, dt, sim, print,(prop.getProperty("java") + prop.getProperty("output") + i + ".csv"),
+                                        mrx, mry, mvx, mvy, erx, ery, evx, evy,
+                                        distanceEarthShip, vOrbit, vShip);
 
-                    FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output") + i + ".csv");
-                    System.out.println("Simulation" + i);
-                    for (int j = 0, k = 0; j < sim; j++) {
-                        if(j%(print) == 0) {
-                            writer.write("Day ");
-                            writer.write(String.valueOf(k++));
-                            writer.write('\n');
-                            writer.write(simulation.toString());
-                        }
-                        simulation.iterate(dt);
-                    }
-                    writer.flush();
+                    executor.submit(task);
+
+//                    Simulation simulation = new Simulation(mrx, mry, mvx, mvy, erx, ery, evx, evy,
+//                            distanceEarthShip, vOrbit, vShip);
+//
+//                    FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output") + i + ".csv");
+//                    System.out.println("Simulation" + i);
+//                    for (int j = 0, k = 0; j < sim; j++) {
+//                        if(j%(print) == 0) {
+//                            writer.write("Day ");
+//                            writer.write(String.valueOf(k++));
+//                            writer.write('\n');
+//                            writer.write(simulation.toString());
+//                        }
+//                        simulation.iterate(dt);
+//                    }
+//                    writer.flush();
 
                 }
             }
+
+            executor.shutdown();
 
         } catch (IOException ex) {
             ex.printStackTrace();
         }
 
+    }
+}
+
+class Task implements Runnable {
+
+    int id;
+    double dt;
+    double sim;
+    double print;
+    String outputFile;
+    Simulation simulation;
+
+    Task(int id, double dt, double sim, double print, String outputfile,
+         double mrx, double mry, double mvx, double mvy,
+         double erx, double ery, double evx, double evy,
+         double distanceEarthShip, double vOrbit, double vShip) {
+        this.id = id;
+        this.dt = dt;
+        this.sim = sim;
+        this.print = print;
+        this.outputFile = outputfile;
+        this.simulation = new Simulation(mrx, mry, mvx, mvy,
+                erx, ery, evx, evy,
+                distanceEarthShip, vOrbit, vShip);
+    }
+
+    @Override
+    public void run() {
+        try {
+            FileWriter writer = new FileWriter(outputFile);
+            System.out.println("Start Simulation" + id);
+
+            for (int j = 0, k = 0; j < sim; j++) {
+                if(j%(print) == 0) {
+                    writer.write("Day ");
+                    writer.write(String.valueOf(k++));
+                    writer.write('\n');
+                    writer.write(simulation.toString());
+                }
+                simulation.iterate(dt);
+            }
+            writer.flush();
+
+            System.out.println("End Simulation" + id);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 }
