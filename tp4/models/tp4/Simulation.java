@@ -70,11 +70,16 @@ public class Simulation {
         double x = earth.rx[0]*distanceEarthShip/d;
         double y = earth.ry[0]*distanceEarthShip/d;
 
-        double vt = earth.rx[1]*(-sen) + earth.ry[1]*cos;
-        vt += vOrbit + vShip;
+        double v = Math.sqrt(Math.pow(earth.rx[1], 2) + Math.pow(earth.ry[1], 2));
 
-        double vx = vt+(-sen);
-        double vy = vt+(cos);
+        double vtx = v*(-sen);
+        double vty = v*(cos);
+
+        double v0x = (vShip+vOrbit)*(-sen);
+        double v0y = (vShip+vOrbit)*(cos);
+
+        double vx = vtx+v0x;
+        double vy = vty+v0y;
 
         return new Particle(g, 2*ten(5), earth.rx[0]+x, earth.ry[0]+y, vx, vy);
 
@@ -90,11 +95,16 @@ public class Simulation {
         double x = mars.rx[0]*distanceMarsShip/d;
         double y = mars.ry[0]*distanceMarsShip/d;
 
-        double vt = mars.rx[1]*(-sen) + mars.ry[1]*cos;
-        vt += (vOrbit + vShip);
+        double v = Math.sqrt(Math.pow(mars.rx[1], 2) + Math.pow(mars.ry[1], 2));
 
-        double vx = vt+(-sen);
-        double vy = vt+(cos);
+        double vtx = v*(-sen);
+        double vty = v*(cos);
+
+        double v0x = (vShip+vOrbit)*(-sen);
+        double v0y = (vShip+vOrbit)*(cos);
+
+        double vx = vtx+v0x;
+        double vy = vty+v0y;
 
         return new Particle(g, 2*ten(5), mars.rx[0]-x, mars.ry[0]-y, vx, vy);
 
