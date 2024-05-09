@@ -54,7 +54,7 @@ public class TP4 {
                 earthBr.readLine();
             }
 
-            ExecutorService executor = Executors.newFixedThreadPool(20);
+            ExecutorService executor = Executors.newFixedThreadPool(60);
 
             for (int i=start; i<end; i++) {
                 if ((marsLine = marsBr.readLine()) != null &&

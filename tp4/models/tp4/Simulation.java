@@ -67,8 +67,10 @@ public class Simulation {
         double cos = (earth.rx[0]/d);
         double sen = earth.ry[0]/d;
 
-        double x = earth.rx[0]*distanceEarthShip/d;
-        double y = earth.ry[0]*distanceEarthShip/d;
+        double earthRadius = 6371.01;
+
+        double x = earth.rx[0]*(distanceEarthShip+earthRadius)/d;
+        double y = earth.ry[0]*(distanceEarthShip+earthRadius)/d;
 
         double v = Math.sqrt(Math.pow(earth.rx[1], 2) + Math.pow(earth.ry[1], 2));
 
@@ -92,8 +94,10 @@ public class Simulation {
         double cos = (mars.rx[0]/d);
         double sen = mars.ry[0]/d;
 
-        double x = mars.rx[0]*distanceMarsShip/d;
-        double y = mars.ry[0]*distanceMarsShip/d;
+        double marsRadius = 3389.92;
+
+        double x = mars.rx[0]*(distanceMarsShip+marsRadius)/d;
+        double y = mars.ry[0]*(distanceMarsShip+marsRadius)/d;
 
         double v = Math.sqrt(Math.pow(mars.rx[1], 2) + Math.pow(mars.ry[1], 2));
 
