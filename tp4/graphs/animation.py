@@ -9,7 +9,7 @@ config.read('../configs/app.config')
 config.read(config['DEFAULT']['python'] + config['DEFAULT']['file'])
 
 # file a leer
-filename = '../ios/simulation65.csv'
+filename = '../ios/simulationmars_250.csv'
 
 particles = parser.parse_csv(filename)
 
@@ -41,7 +41,7 @@ def animate(i):
 #
 numframes = len(particles)
 anim = FuncAnimation(fig, animate, init_func=init,
-                     frames=numframes, interval=50, blit=True)
+                     frames=numframes, interval=80, blit=True)
 
 plt.show()
 

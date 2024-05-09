@@ -34,6 +34,7 @@ public class TP4 {
         String marsFile = prop.getProperty("java") + marsCsv;
         String earthFile = prop.getProperty("java") + earthCsv;
         BufferedReader marsBr, earthBr;
+        boolean backToEarth = Boolean.parseBoolean(prop.getProperty("backToEarth"));
         int start = Integer.parseInt(prop.getProperty("startDate"));
         int end = Integer.parseInt(prop.getProperty("endDate"));
         int dt = Integer.parseInt(prop.getProperty("dt"));
@@ -75,7 +76,7 @@ public class TP4 {
 
                     Task task = new Task(i, dt, sim, print,(prop.getProperty("java") + prop.getProperty("output") + i + ".csv"),
                                         mrx, mry, mvx, mvy, erx, ery, evx, evy,
-                                        distanceEarthShip, vOrbit, vShip);
+                                        distanceEarthShip, vOrbit, vShip, backToEarth);
 
                     executor.submit(task);
 
@@ -119,7 +120,7 @@ class Task implements Runnable {
     Task(int id, double dt, double sim, double print, String outputfile,
          double mrx, double mry, double mvx, double mvy,
          double erx, double ery, double evx, double evy,
-         double distanceEarthShip, double vOrbit, double vShip) {
+         double distancePlanetShip, double vOrbit, double vShip, boolean backToEarth) {
         this.id = id;
         this.dt = dt;
         this.sim = sim;
@@ -127,7 +128,7 @@ class Task implements Runnable {
         this.outputFile = outputfile;
         this.simulation = new Simulation(mrx, mry, mvx, mvy,
                 erx, ery, evx, evy,
-                distanceEarthShip, vOrbit, vShip);
+                distancePlanetShip, vOrbit, vShip, backToEarth);
     }
 
     @Override

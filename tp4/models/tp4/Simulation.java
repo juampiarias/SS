@@ -11,14 +11,18 @@ public class Simulation {
     double g;
 
     Simulation(double mrx, double mry, double mvx, double mvy, double erx, double ery, double evx, double evy,
-               double distanceEarthShip, double vOrbit, double vShip) {
+               double distancePlanetShip, double vOrbit, double vShip, boolean backToEarth) {
         g = 6.693*ten(-20);
 
         sun = new Sun(g, 1988500*ten(24), 0, 0, 0, 0);
         mars = new Particle(g, 6.4171*ten(23), mrx, mry, mvx, mvy);
         earth = new Particle(g, 5.97219*ten(24), erx, ery, evx, evy);
-        ship = initializeShip(distanceEarthShip, vOrbit, vShip);
-
+        if (backToEarth) {
+            ship = initializeShipBackToEarth(distancePlanetShip, vOrbit, vShip);
+        }
+        else {
+            ship = initializeShip(distancePlanetShip, vOrbit, vShip);
+        }
         sun.interact(earth);
         sun.interact(mars);
         sun.interact(ship);
@@ -73,6 +77,26 @@ public class Simulation {
         double vy = vt+(cos);
 
         return new Particle(g, 2*ten(5), earth.rx[0]+x, earth.ry[0]+y, vx, vy);
+
+    }
+
+    Particle initializeShipBackToEarth (double distanceMarsShip, double vOrbit, double vShip) {
+
+        double d = Math.sqrt(Math.pow(mars.rx[0], 2) + Math.pow(mars.ry[0], 2));
+
+        double cos = (mars.rx[0]/d);
+        double sen = mars.ry[0]/d;
+
+        double x = mars.rx[0]*distanceMarsShip/d;
+        double y = mars.ry[0]*distanceMarsShip/d;
+
+        double vt = mars.rx[1]*(-sen) + mars.ry[1]*cos;
+        vt += (vOrbit + vShip);
+
+        double vx = vt+(-sen);
+        double vy = vt+(cos);
+
+        return new Particle(g, 2*ten(5), mars.rx[0]-x, mars.ry[0]-y, vx, vy);
 
     }
 
