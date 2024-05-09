@@ -66,13 +66,11 @@ public class Simulation {
         double x = earth.rx[0]*distanceEarthShip/d;
         double y = earth.ry[0]*distanceEarthShip/d;
 
-        double vtx = earth.rx[1]*(-sen) + earth.ry[1]*cos;
-        double vty = -earth.rx[1]*sen*cos + earth.ry[1]*cos*cos;
-        double v0x = (vOrbit + vShip)*(-sen);
-        double v0y = (vOrbit + vShip)*cos;
+        double vt = earth.rx[1]*(-sen) + earth.ry[1]*cos;
+        vt += vOrbit + vShip;
 
-        double vx = vtx+v0x;
-        double vy = vty+v0y;
+        double vx = vt+(-sen);
+        double vy = vt+(cos);
 
         return new Particle(g, 2*ten(5), earth.rx[0]+x, earth.ry[0]+y, vx, vy);
 
