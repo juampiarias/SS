@@ -71,7 +71,7 @@ public class TP4 {
 
                     double distanceEarthShip = 1500;
                     double vOrbit = 7.12;
-                    double vShip = 8;
+                    double vShip = Double.parseDouble(prop.getProperty("vShip"));
 
                     Task task = new Task(i, dt, sim, print,(prop.getProperty("java") + prop.getProperty("output") + i + ".csv"),
                                         mrx, mry, mvx, mvy, erx, ery, evx, evy,

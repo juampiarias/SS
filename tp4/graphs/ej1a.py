@@ -56,11 +56,11 @@ days_dim_1_second = range(len(days_1_second))
 days_dim_1_hour = range(len(days_1_hour))
 days_dim_1_day = range(len(days_1_day))
 
-plt.scatter(days_dim_1_second, day_energys_1_second, label='delta t = 1')
+# plt.scatter(days_dim_1_second, day_energys_1_second, label='delta t = 1')
 plt.scatter(days_dim_1_minute, day_energys_1_minute, label='delta t = 60')
 # plt.scatter(days_dim_1_hour, day_energys_1_hour, label='delta t = 3600')
 # plt.scatter(days_dim_1_day, day_energys_1_day, label='delta t = 84600')
-# plt.yscale('symlog')
+# plt.yscale('log')
 # Agregar etiquetas y título
 plt.xlabel('Dias')
 plt.ylabel('Enegia')
