@@ -11,19 +11,22 @@ public class Loco {
     Vector forces;
 
     double kn = 1.2E5;
-    double kt = 2.4E5;
+//    double kt = 2.4E5;
     double A = 2000;
     double B = 0.08;
-    double desired = 5;
-    double tau = 0.5;
+    double desired;
+    double tau;
 
-    public Loco (double x, double y, double vx, double vy, double radius, double mass) {
+    public Loco (double x, double y, double vx, double vy, double radius, double mass, double desired, double tau) {
         this.radius = radius;
         this.mass = mass;
 
         this.alphas = new double[]{3.0/16, 251.0/360, 1, 11.0/18, 1.0/6, 1.0/60};
         this.rx = new double[]{x, vx, 0.0, 0.0, 0.0, 0.0};
         this.ry = new double[]{y, vy, 0.0, 0.0, 0.0, 0.0};
+
+        this.desired = desired;
+        this.tau = tau;
 
         forces = new Vector(0.0, 0.0);
     }
@@ -38,18 +41,18 @@ public class Loco {
 
         Vector vector = new Vector(rx[0]- p.x(), ry[0]- p.y());
         Vector normal = vector.normalize();
-        Vector tangent = normal.tangent();
+//        Vector tangent = normal.tangent();
 
         double dij = vector.magnitude();
 
         double epsilon = dij - (radius + p.radius());
 
-        double dv = tangent.dot(new Vector(-rx[1], -ry[1]));
+//        double dv = tangent.dot(new Vector(-rx[1], -ry[1]));
 
         // Contact Force
-        if (epsilon < 0.0) {
+        if (epsilon <= 0.0) {
             forces = forces.add(normal.scalar(-epsilon*kn));
-            forces = forces.add(tangent.scalar(dv*epsilon*kt));
+//            forces = forces.add(tangent.scalar(dv*epsilon*kt));
         }
 
         // Social Force
@@ -60,7 +63,9 @@ public class Loco {
         Vector vector = new Vector(p.x()-rx[0], p.y()-ry[0]);
         Vector normal = vector.normalize();
 
-        vector = normal.scalar(desired).subtract(new Vector(rx[1], ry[1])).scalar(mass/tau);
+        vector = normal.scalar(desired);
+        vector = vector.subtract(new Vector(rx[1], ry[1]));
+        vector = vector.scalar(mass/tau);
 
         forces = forces.add(vector);
     }

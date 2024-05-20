@@ -11,12 +11,12 @@ public class Simulation {
     }
 
     public void initializeLoco(Team home, Team away, Particle ball) {
-//        for (Particle p : home.getPlayers()) {
-//            loco.calculateSocialForce(p);
-//        }
-//        for (Particle p : away.getPlayers()) {
-//            loco.calculateSocialForce(p);
-//        }
+        for (Particle p : home.getPlayers()) {
+            loco.calculateSocialForce(p);
+        }
+        for (Particle p : away.getPlayers()) {
+            loco.calculateSocialForce(p);
+        }
         loco.calculateDrivingForce(ball);
         loco.setA();
     }
@@ -24,12 +24,12 @@ public class Simulation {
     public void iterate(Team home, Team away, Particle ball) {
         for (int i=0; i<10; i++) {
             loco.gear_predict(dt);
-//            for (Particle p : home.getPlayers()) {
-//                loco.calculateSocialForce(p);
-//            }
-//            for (Particle p : away.getPlayers()) {
-//                loco.calculateSocialForce(p);
-//            }
+            for (Particle p : home.getPlayers()) {
+                loco.calculateSocialForce(p);
+            }
+            for (Particle p : away.getPlayers()) {
+                loco.calculateSocialForce(p);
+            }
             loco.calculateDrivingForce(ball);
             loco.gear_correct(dt);
         }

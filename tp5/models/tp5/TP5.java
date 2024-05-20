@@ -1,20 +1,36 @@
 package tp5;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class TP5 {
 
     public static void main(String[] args) {
+        String configFile = "tp5/configs/app.config";
+        Properties prop = new Properties();
+        try (FileInputStream fis = new FileInputStream(configFile)) {
+            prop.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int start = Integer.parseInt(prop.getProperty("start_time"));
+        int end = Integer.parseInt(prop.getProperty("end_time"));
+        double desired = Double.parseDouble(prop.getProperty("desired"));
+        double tau = Double.parseDouble(prop.getProperty("tau"));
+        boolean desiredCycle = Boolean.parseBoolean(prop.getProperty("desired_cycle"));
+        boolean tauCycle = Boolean.parseBoolean(prop.getProperty("tau_cycle"));
+
         int xSide = 105;
         int ySide = 68;
 
-        int time = 24*60*5; //5 minutes of play
+        int start_time = 24*60*start;
+        int end_time = 24*60*end;
 
         Random radius = new Random();
 
@@ -36,8 +52,13 @@ public class TP5 {
                 awayBr.readLine();
             }
 
-            int i=0;
-            while (i<time) {
+            for(int i=0; i<start_time; i++) {
+                localBr.readLine();
+                awayBr.readLine();
+            }
+
+            int i=start_time;
+            while (i<end_time) {
                 if ((homeLine = localBr.readLine()) != null &&
                     (awayLine = awayBr.readLine()) != null) {
 
@@ -88,19 +109,81 @@ public class TP5 {
             ex.printStackTrace();
         }
 
-        Loco loco = new Loco((0.5*xSide) - 10, 0.5*ySide, 10, 0, radius.nextDouble(0.25, 0.35), 80);
-        Simulation simulation = new Simulation(loco);
-        simulation.initializeLoco(homeTeam.getFirst(), awayTeam.getFirst(), balls.getFirst());
+
+        if (!desiredCycle && !tauCycle) {
+            Loco loco = new Loco((0.5*xSide) - 10, 0.5*ySide, 10, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+            Task task = new Task(0, end_time-start_time, prop.getProperty("java") + ".csv", homeTeam, awayTeam, balls, loco);
+        } else {
+
+            ExecutorService executor = Executors.newFixedThreadPool(60);
+
+            if (desiredCycle) {
+                desired = 0.1;
+                double step = 0.1;
+                end = (int) ((13-0.1)/step);
+                for (int i=0; i<end; i++) {
+                    Loco loco = new Loco((0.5*xSide) - 10, 0.5*ySide, 10, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+                    Task task = new Task(i, end_time-start_time, prop.getProperty("java") + prop.getProperty("output") + "_v" + i + ".csv", homeTeam, awayTeam, balls, loco);
+                    desired += step;
+
+                    executor.submit(task);
+                }
+
+            } else {
+                tau = 0.1;
+                double step = 0.1;
+                end = (int) ((1-0.1)/step);
+                for (int i=0; i<end; i++) {
+                    Loco loco = new Loco((0.5*xSide) - 10, 0.5*ySide, 10, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+                    Task task = new Task(i, end_time-start_time, prop.getProperty("java") + prop.getProperty("output") + "_tau" +i + ".csv", homeTeam, awayTeam, balls, loco);
+                    tau += step;
+
+                    executor.submit(task);
+                }
+            }
+
+            executor.shutdown();
+        }
+
+    }
+}
+
+class Task implements Runnable {
+
+    int id;
+    int time;
+    String outputFile;
+    Simulation simulation;
+    List<Team> home;
+    List<Team> away;
+    List<Particle> balls;
+
+    Task(int id, int time, String outputFile,
+         List<Team> home, List<Team> away, List<Particle> balls, Loco loco) {
+        this.id = id;
+        this.time = time;
+        this.outputFile = outputFile;
+        this.home = home;
+        this.away = away;
+        this.balls = balls;
+
+        this.simulation = new Simulation(loco);
+    }
+
+    @Override
+    public void run() {
+        simulation.initializeLoco(home.getFirst(), away.getFirst(), balls.getFirst());
 
         try {
-            FileWriter writer = new FileWriter("tp5/ios/simulation.csv");
+            System.out.println("Start sim " + id);
+            FileWriter writer = new FileWriter(outputFile);
             for (int i=0; i<time; i++) {
-                simulation.iterate(homeTeam.get(i), awayTeam.get(i), balls.get(i));
+                simulation.iterate(home.get(i), away.get(i), balls.get(i));
                 writer.write(simulation.toString());
             }
 
             writer.flush();
-
+            System.out.println("End sim " + id);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
