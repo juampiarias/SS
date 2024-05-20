@@ -76,8 +76,8 @@ def create_field():
     bench_length = 10
 
     # Both benches on the same side (bottom side of the plot)
-    home_bench = patches.Rectangle((field_length / 2 - bench_length - 2, field_width + 3), bench_length, bench_width, linewidth=2, edgecolor='red', facecolor='red')
-    away_bench = patches.Rectangle((field_length / 2 + 2, field_width + 3), bench_length, bench_width, linewidth=2, edgecolor='blue', facecolor='blue')
+    away_bench = patches.Rectangle((field_length / 2 - bench_length - 2, field_width + 3), bench_length, bench_width, linewidth=2, edgecolor='red', facecolor='red')
+    home_bench = patches.Rectangle((field_length / 2 + 2, field_width + 3), bench_length, bench_width, linewidth=2, edgecolor='blue', facecolor='blue')
 
     ax.add_patch(home_bench)
     ax.add_patch(away_bench)
@@ -93,29 +93,34 @@ def create_field():
     return fig, ax
 
 # Parse players' data
-times_local, times_away, times_ball, times = parser.parse_players()
+times_home, times_away, times_ball, times = parser.parse_players()
+times_loco = parser.parse_loco("../ios/simulation.csv")
 
 # Create field
 fig, ax = create_field()
 
-patches_local = []
+patches_home = []
 patches_away = []
 patches_ball = []
+patches_loco = []
 
-local_color = 'b'
+home_color = 'b'
 away_color = 'r'
-ball_color = 'k'
+ball_color = 'white'
+loco_color = 'k'
 
 game_time_text = ax.text(field_length, field_width+5, '',
                          color='white', ha='right', va='bottom', fontsize=12)
 
-for player in times_local[0]:
-    patches_local.append(plt.Circle(xy=(player[0], player[1]), radius=1, animated=True, color=local_color))
+for player in times_home[0]:
+    patches_home.append(plt.Circle(xy=(player[0], player[1]), radius=1, animated=True, color=home_color))
 
 for player in times_away[0]:
     patches_away.append(plt.Circle(xy=(player[0], player[1]), radius=1, animated=True, color=away_color))
 
-patches_ball.append(plt.Circle(xy=(times_ball[0][0], times_ball[0][1]), radius=0.8, linewidth=1, animated=True, color=ball_color))
+patches_ball.append(plt.Circle(xy=(times_ball[0][0], times_ball[0][1]), radius=0.8, animated=True, color=ball_color))
+patches_loco.append(plt.Circle(xy=(times_loco[0][0], times_loco[0][1]), radius=1, animated=True, color=loco_color))
+
 
 def format_time(time_seconds):
     minutes = int(time_seconds // 60)
@@ -124,32 +129,34 @@ def format_time(time_seconds):
 
 
 def init():
-    for p in patches_local:
+    for p in patches_home:
         ax.add_patch(p)
     for p in patches_away:
         ax.add_patch(p)
     ax.add_patch(patches_ball[0])
+    ax.add_patch(patches_loco[0])
 
     game_time_text.set_text(format_time(times[0]))
 
-    return patches_local+patches_away+patches_ball+[game_time_text]
+    return patches_home+patches_away+patches_ball+patches_loco+[game_time_text]
 
-speed = 10
+speed = 2
 #
 def animate(i):
     i = i*speed
-    for patch, p in zip(patches_local, times_local[i]):
+    for patch, p in zip(patches_home, times_home[i]):
         patch.set_center((p[0], p[1]))
     for patch, p in zip(patches_away, times_away[i]):
         patch.set_center((p[0], p[1]))
     patches_ball[0].set_center((times_ball[i][0], times_ball[i][1]))
+    patches_loco[0].set_center((times_loco[i][0], times_loco[i][1]))
 
     game_time_text.set_text(format_time(times[i]))
 
-    return patches_local+patches_away+patches_ball+[game_time_text]
+    return patches_home+patches_away+patches_ball+patches_loco+[game_time_text]
 
 
-numframes = int(len(times_local) / speed)
+numframes = int(len(times_loco) / speed)
 anim = animation.FuncAnimation(fig, animate, init_func=init, frames=numframes, interval=1, blit=True)
 
 # Show plot
