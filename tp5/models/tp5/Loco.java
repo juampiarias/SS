@@ -103,7 +103,7 @@ public class Loco {
         rx = correct(rx[0], rx[1], rx[2], rx[3], rx[4], rx[5], dt, R2x);
         ry = correct(ry[0], ry[1], ry[2], ry[3], ry[4], ry[5], dt, R2y);
 
-        new Vector(0.0, 0.0);
+        forces = new Vector(0.0, 0.0);
     }
 
     double predict(double t0, double t1, double t2, double t3, double t4, double t5, double dt) {
