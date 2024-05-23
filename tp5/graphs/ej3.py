@@ -18,6 +18,8 @@ times_loco = parser.parse_loco(config['DEFAULT']['python'] + config['DEFAULT']['
 max_limit = 8
 
 def format_num(num):
+    # num *= 0.5
+    # return int(num)
     return float(format(num, ".1f"))
 
 def calculate_velocities(team):
@@ -49,11 +51,11 @@ def calculate_pdf(player):
     plt.plot(numbers, probabilities, marker="o")
 
 
-
-calculate_pdf(calculate_velocities(times_home)[6])
-calculate_pdf(calculate_velocities(times_away)[5])
 calculate_pdf(calculate_vel_loco(times_loco))
-plt.xlabel('Number')
-plt.ylabel('Probability')
-plt.title('Probability Distribution Function (PDF)')
+calculate_pdf(calculate_velocities(times_home)[0])
+calculate_pdf(calculate_velocities(times_away)[0])
+calculate_pdf(calculate_velocities(times_away)[8])
+plt.xlabel('Velocidad [m/s]')
+plt.ylabel('Probabilidad')
+# plt.title('Probability Distribution Function (PDF)')
 plt.show()

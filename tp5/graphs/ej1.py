@@ -49,14 +49,26 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=60) as executor:
 means = []
 stdlist = []
 
-for res in results:
-    plt.plot(time_plot, res)
+for i, res in enumerate(results):
+    if i % 50 == 0:
+        aux = "velocidad deseada = " + str(x[i]) + "m/s"
+        plt.plot(time_plot, res, label=aux)
     means.append(np.mean(res))
     stdlist.append(np.std(res))
 
+plt.ylabel("Distancia [m]")
+plt.xlabel("Tiempo [s]")
+plt.legend()
+plt.grid()
+plt.xlim(0)
+plt.ylim(0)
 plt.show()
 
 plt.errorbar(x, means, yerr=stdlist, fmt='o', capsize=5)
+plt.ylabel("Distancia Promedio [m]")
+plt.xlabel("Velocidad Deseada [m/s]")
+plt.grid()
+plt.xlim(0)
 plt.show()
 
 

@@ -28,9 +28,8 @@ def distance_to_ball(balls, loco):
     return dist
 
 desired = 0.1
-step = 0.1
-x = np.arange(desired, 1.1, step)
-print(x)
+step = 0.01
+x = np.arange(desired, 1.01, step)
 
 filenames = [config['DEFAULT']['python'] + config['DEFAULT']['output'] + "_tau" + str(i) + ".csv" for i in range(0, 91)]
 
@@ -50,12 +49,24 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=60) as executor:
 means = []
 stdlist = []
 
-for res in results:
-    plt.plot(time_plot, res)
+for i, res in enumerate(results):
+    if i % 30 == 0:
+        aux = "tau = " + str(x[i]) + "s"
+        plt.plot(time_plot, res, label=aux)
+        plt.plot(time_plot, res)
     means.append(np.mean(res))
     stdlist.append(np.std(res))
 
+plt.ylabel("Distancia [m]")
+plt.xlabel("Tiempo [s]")
+plt.legend()
+plt.grid()
+plt.xlim(0)
+plt.ylim(0)
 plt.show()
 
 plt.errorbar(x, means, yerr=stdlist, fmt='o', capsize=5)
+plt.ylabel("Distancia Promedio [m]")
+plt.xlabel("Tau [s]")
+plt.grid()
 plt.show()
