@@ -131,7 +131,7 @@ public class TP5 {
 
             } else {
                 tau = 0.1;
-                double step = 0.01;
+                double step = 0.1;
                 end = (int) ((1-0.1)/step);
                 for (int i=0; i<=end; i++) {
                     Loco loco = new Loco(balls.getFirst().x() - 10, balls.getFirst().y(), desired, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);

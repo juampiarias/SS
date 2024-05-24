@@ -53,7 +53,7 @@ def calculate_pdf(player):
 
 calculate_pdf(calculate_vel_loco(times_loco))
 calculate_pdf(calculate_velocities(times_home)[0])
-calculate_pdf(calculate_velocities(times_away)[0])
+calculate_pdf(calculate_velocities(times_away)[4])
 calculate_pdf(calculate_velocities(times_away)[8])
 plt.xlabel('Velocidad [m/s]')
 plt.ylabel('Probabilidad')

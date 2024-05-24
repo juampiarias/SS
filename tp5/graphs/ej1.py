@@ -50,9 +50,9 @@ means = []
 stdlist = []
 
 for i, res in enumerate(results):
-    if i % 50 == 0:
-        aux = "velocidad deseada = " + str(x[i]) + "m/s"
-        plt.plot(time_plot, res, label=aux)
+    if i == 0 or i == 49 or i == 99:
+        aux = "velocidad deseada = " + str(x[i]) + " m/s"
+        plt.scatter(time_plot, res, s=5, label=aux)
     means.append(np.mean(res))
     stdlist.append(np.std(res))
 
