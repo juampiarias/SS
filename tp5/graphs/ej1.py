@@ -69,5 +69,8 @@ plt.grid()
 plt.xlim(0)
 plt.show()
 
-
-
+plt.figure()
+plt.hlines(1,1,20)  # Draw a horizontal line
+plt.eventplot(times, orientation='horizontal', colors='k')
+plt.axis('off')
+plt.show()
