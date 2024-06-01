@@ -3,6 +3,7 @@ import matplotlib.patches as patches
 from matplotlib import animation
 from datetime import datetime
 import parser  # Assuming parser is a module in your project
+import configparser
 
 # Field dimensions
 field_length = 105
@@ -92,9 +93,14 @@ def create_field():
 
     return fig, ax
 
-# Parse players' data
-times_home, times_away, times_ball, times = parser.parse_players()
-times_loco = parser.parse_loco("../ios/simulation.csv")
+config = configparser.ConfigParser()
+config.read('../configs/app.config')
+
+start_time = 25*60*int(config['DEFAULT']['start_time'])
+end_time = 25*60*int(config['DEFAULT']['end_time'])
+
+times_home, times_away, times_ball, times = parser.parse_players(start_time, end_time)
+times_loco = parser.parse_loco(config['DEFAULT']['python'] + config['DEFAULT']['output'] + ".csv")
 
 # Create field
 fig, ax = create_field()

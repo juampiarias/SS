@@ -4,7 +4,7 @@ public class Simulation {
 
     Loco loco;
 
-    double dt = 1.0/240;
+    double dt = 0.004;
 
     Simulation(Loco loco) {
         this.loco = loco;

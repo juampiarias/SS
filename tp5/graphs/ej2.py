@@ -8,12 +8,10 @@ import concurrent.futures
 config = configparser.ConfigParser()
 config.read('../configs/app.config')
 
-start_time = 24*60*int(config['DEFAULT']['start_time'])
-end_time = 24*60*int(config['DEFAULT']['end_time'])
+start_time = 25*60*int(config['DEFAULT']['start_time'])
+end_time = 25*60*int(config['DEFAULT']['end_time'])
 
-times_home, times_away, times_ball, times = parser.parse_players()
-ball_plot = times_ball[start_time:end_time]
-time_plot = times[start_time:end_time]
+times_home, times_away, times_ball, times = parser.parse_players(start_time, end_time)
 
 def plot_distance(filename, ball_plot):
     times_loco = parser.parse_loco(filename)
@@ -37,7 +35,7 @@ max_threads = min(len(filenames), 60)
 results = []
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=60) as executor:
-    futures = [executor.submit(plot_distance, filename, ball_plot) for filename in filenames]
+    futures = [executor.submit(plot_distance, filename, times_ball) for filename in filenames]
     concurrent.futures.wait(futures)
     for future, filename in zip(futures, filenames):
         try:
@@ -52,9 +50,9 @@ stdlist = []
 for i, res in enumerate(results):
     if i == 0 or i == 4 or i == 9:
         aux = "tau = " + str(x[i]) + "s"
-        plt.scatter(time_plot, res, s=5, label=aux)
+        plt.scatter(times, res, s=5, label=aux)
     means.append(np.mean(res))
-    stdlist.append(np.std(res))
+    stdlist.append(np.std(res)/math.sqrt(len(res)))
 
 plt.ylabel("Distancia [m]")
 plt.xlabel("Tiempo [s]")

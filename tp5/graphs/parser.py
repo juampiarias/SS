@@ -3,7 +3,7 @@ import csv
 x_side = 105
 y_side = 68
 
-def parse_players():
+def parse_players(start_time, end_time):
     times_home = []
     times_away = []
     times_ball = []
@@ -21,7 +21,17 @@ def parse_players():
                 next(reader_home)
                 next(reader_away)
 
+            for i in range(start_time):
+                next(reader_home)
+                next(reader_away)
+
+            counter = start_time
             for row_home, row_away in zip(reader_home, reader_away):
+
+                if counter < end_time:
+                    pass
+                else:
+                    break
 
                 if row_home[31] != 'NaN':
                     times.append(float(row_home[2]))
@@ -45,6 +55,8 @@ def parse_players():
                     coordinates_away = []
 
                     times_ball.append([float(row_home[31])*x_side, float(row_home[32])*y_side])
+
+                counter += 1
 
     return times_home, times_away, times_ball, times
 
