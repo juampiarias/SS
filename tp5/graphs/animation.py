@@ -146,7 +146,7 @@ def init():
 
     return patches_home+patches_away+patches_ball+patches_loco+[game_time_text]
 
-speed = 2
+speed = 4
 #
 def animate(i):
     i = i*speed
@@ -167,3 +167,6 @@ anim = animation.FuncAnimation(fig, animate, init_func=init, frames=numframes, i
 
 # Show plot
 plt.show()
+
+writer_video = animation.FFMpegWriter(fps=60)
+anim.save('loco5.mp4', writer=writer_video)

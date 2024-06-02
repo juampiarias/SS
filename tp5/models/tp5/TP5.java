@@ -113,13 +113,16 @@ public class TP5 {
         }
 
         double initializeX;
+        int multiplier;
         if (balls.getFirst().x() - 10 > 0) {
             initializeX = balls.getFirst().x() - 10;
+            multiplier = 1;
         } else {
             initializeX = balls.getFirst().x() + 10;
+            multiplier = -1;
         }
         if (!desiredCycle && !tauCycle) {
-            Loco loco = new Loco(initializeX, balls.getFirst().y(), desired, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+            Loco loco = new Loco(initializeX, balls.getFirst().y(), desired*multiplier, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
             Task task = new Task(0, counter, prop.getProperty("java") + prop.getProperty("output") + ".csv", homeTeam, awayTeam, balls, loco);
             task.run();
         } else {
@@ -128,11 +131,15 @@ public class TP5 {
 
             if (desiredCycle) {
                 desired = 0.1;
-                double step = 0.1;
-                end = (int) ((13-0.1)/step);
-                for (int i=0; i<=end; i++) {
-                    Loco loco = new Loco(initializeX, balls.getFirst().y(), desired, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
-                    Task task = new Task(i, counter, prop.getProperty("java") + prop.getProperty("output") + "_v" + i + ".csv", homeTeam, awayTeam, balls, loco);
+                Loco loco = new Loco(initializeX, balls.getFirst().y(), desired*multiplier, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+                Task task = new Task(0, counter, prop.getProperty("java") + prop.getProperty("output") + "_v" + 0 + ".csv", homeTeam, awayTeam, balls, loco);
+                executor.submit(task);
+                desired = 0.5;
+                double step = 0.5;
+                end = (int) ((13.5-0.5)/step);
+                for (int i=1; i<=end; i++) {
+                    loco = new Loco(initializeX, balls.getFirst().y(), desired*multiplier, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+                    task = new Task(i, counter, prop.getProperty("java") + prop.getProperty("output") + "_v" + i + ".csv", homeTeam, awayTeam, balls, loco);
                     desired += step;
 
                     executor.submit(task);
@@ -143,7 +150,7 @@ public class TP5 {
                 double step = 0.1;
                 end = (int) ((1-0.1)/step);
                 for (int i=0; i<=end; i++) {
-                    Loco loco = new Loco(initializeX, balls.getFirst().y(), desired, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
+                    Loco loco = new Loco(initializeX, balls.getFirst().y(), desired*multiplier, 0, radius.nextDouble(0.25, 0.35), 80, desired, tau);
                     Task task = new Task(i, counter, prop.getProperty("java") + prop.getProperty("output") + "_tau" +i + ".csv", homeTeam, awayTeam, balls, loco);
                     tau += step;
 

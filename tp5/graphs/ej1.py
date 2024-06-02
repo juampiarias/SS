@@ -25,11 +25,12 @@ def distance_to_ball(balls, loco):
 
     return dist
 
-desired = 0.1
-step = 0.1
+desired = 0.5
+step = 0.5
 x = np.arange(desired, 13.1, step)
+x = np.append([0.1], x)
 
-filenames = [config['DEFAULT']['python'] + config['DEFAULT']['output'] + "_v" + str(i) + ".csv" for i in range(0, 130)]
+filenames = [config['DEFAULT']['python'] + config['DEFAULT']['output'] + "_v" + str(i) + ".csv" for i in range(27)]
 
 max_threads = min(len(filenames), 60)
 results = []
@@ -48,11 +49,12 @@ means = []
 stdlist = []
 
 for i, res in enumerate(results):
-    if i == 0 or i == 49 or i == 99:
+    if i == 0 or i == 10 or i == 20:
         aux = "velocidad deseada = " + str(x[i]) + " m/s"
         plt.scatter(times, res, s=5, label=aux)
     means.append(np.mean(res))
-    stdlist.append(np.std(res)/math.sqrt(len(res)))
+    # stdlist.append(np.std(res)/math.sqrt(len(res)))
+    stdlist.append(np.std(res))
 
 plt.ylabel("Distancia [m]")
 plt.xlabel("Tiempo [s]")

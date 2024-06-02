@@ -52,7 +52,8 @@ for i, res in enumerate(results):
         aux = "tau = " + str(x[i]) + "s"
         plt.scatter(times, res, s=5, label=aux)
     means.append(np.mean(res))
-    stdlist.append(np.std(res)/math.sqrt(len(res)))
+    # stdlist.append(np.std(res)/math.sqrt(len(res)))
+    stdlist.append(np.std(res))
 
 plt.ylabel("Distancia [m]")
 plt.xlabel("Tiempo [s]")

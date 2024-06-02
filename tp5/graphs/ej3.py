@@ -13,7 +13,7 @@ end_time = 25*60*int(config['DEFAULT']['end_time'])
 times_home, times_away, times_ball, times = parser.parse_players(start_time, end_time)
 times_loco = parser.parse_loco(config['DEFAULT']['python'] + config['DEFAULT']['output'] + ".csv")
 
-max_limit = 8
+max_limit = 10
 
 def format_num(num):
     # num *= 0.5
@@ -37,23 +37,25 @@ def calculate_vel_loco(loco):
     velocities = []
     for i in range(1, len(loco)):
         aux = math.sqrt(math.pow(loco[i][2], 2) + math.pow(loco[i][3], 2))
-        velocities.append(format_num(aux))
+        if 0 <= aux < max_limit:
+            velocities.append(format_num(aux))
 
     return velocities
 
-def calculate_pdf(player):
+def calculate_pdf(player, label):
     numbers, counts = np.unique(player, return_counts=True)
     total_elements = len(player)
     probabilities = counts / total_elements
     # Plot the PDF
-    plt.plot(numbers, probabilities, marker="o")
+    plt.plot(numbers, probabilities, marker="o", label=label)
 
 
-calculate_pdf(calculate_vel_loco(times_loco))
-calculate_pdf(calculate_velocities(times_home)[0])
-calculate_pdf(calculate_velocities(times_away)[4])
-calculate_pdf(calculate_velocities(times_away)[8])
+calculate_pdf(calculate_vel_loco(times_loco), "Loco")
+calculate_pdf(calculate_velocities(times_away)[0], "J-25")
+calculate_pdf(calculate_velocities(times_away)[2], "J-16")
+calculate_pdf(calculate_velocities(times_home)[6], "J-6")
 plt.xlabel('Velocidad [m/s]')
 plt.ylabel('Probabilidad [${(m/s)}^{-1}$]')
+plt.legend()
 # plt.title('Probability Distribution Function (PDF)')
 plt.show()
