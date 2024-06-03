@@ -76,3 +76,13 @@ plt.hlines(1,1,20)  # Draw a horizontal line
 plt.eventplot(times, orientation='horizontal', colors='k')
 plt.axis('off')
 plt.show()
+
+desired = 0.04
+step = 0.04
+x = np.arange(desired, len(times)*0.04, step)
+
+plt.figure()
+plt.hlines(1,1,20)  # Draw a horizontal line
+plt.eventplot(x, orientation='horizontal', colors='k')
+plt.axis('off')
+plt.show()

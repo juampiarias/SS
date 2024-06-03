@@ -169,4 +169,4 @@ anim = animation.FuncAnimation(fig, animate, init_func=init, frames=numframes, i
 plt.show()
 
 writer_video = animation.FFMpegWriter(fps=60)
-anim.save('loco5.mp4', writer=writer_video)
+# anim.save('loco5.mp4', writer=writer_video)
