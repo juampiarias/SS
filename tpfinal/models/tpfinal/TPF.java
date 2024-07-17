@@ -25,12 +25,17 @@ public class TPF {
         int time = Integer.parseInt(prop.getProperty("time"));
         double dt = Double.parseDouble(prop.getProperty("dt"));
         int simulations = Integer.parseInt(prop.getProperty("simulations"));
+        int guards = Integer.parseInt(prop.getProperty("guards"));
+        int fans = Integer.parseInt(prop.getProperty("fans"));
+        double circleRadius = Double.parseDouble(prop.getProperty("circleRadius"));
+        double circleExtension = Double.parseDouble(prop.getProperty("circleExtension"));
 
         ExecutorService executor = Executors.newFixedThreadPool(60);
+        Generator generator = new Generator(guards, fans, desired, tau, circleRadius, circleExtension);
 
         for (int i = 0; i < simulations; i++) {
             Task task = new Task(i, prop.getProperty("java") + prop.getProperty("output"),
-                    time, dt, desired, tau);
+                    time, dt, generator);
             executor.execute(task);
         }
 
@@ -45,32 +50,31 @@ class Task implements Runnable {
 
     int time;
     double dt;
-    double desired;
-    double tau;
+
+    Generator generator;
 
     Simulation simulation;
     List<Person> guards;
     List<Person> fans;
 
-    Task(int id, String outputFile, int time, double dt, double desired, double tau) {
+    Task(int id, String outputFile, int time, double dt, Generator generator) {
         this.id = id;
         this.outputFile = outputFile;
 
         this.time = time;
         this.dt = dt;
-        this.desired = desired;
-        this.tau = tau;
 
-        this.guards = new ArrayList<Person>();
-        this.fans = new ArrayList<Person>();
+        this.generator = generator;
+
+        this.guards = generator.generateGuards();
+        this.fans = generator.generateFans();
 
         //fill guards and fans
-        //TODO: GENERATORS
-        Person guard = new Guard(1,-10,-10, -desired,0, 0.25, 80, desired, tau);
-        guards.add(guard);
+//        Person guard = new Guard(1,-10,-10, -desired,0, 0.25, 80, desired, tau);
+//        guards.add(guard);
 
-        Person fan = new Fan(1,-20,0, desired,0, 0.25, 80, desired, tau);
-        fans.add(fan);
+//        Person fan = new Fan(1,-20,0, desired,0, 0.25, 80, desired, tau);
+//        fans.add(fan);
 
         this.simulation = new Simulation(guards, fans);
     }

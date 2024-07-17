@@ -19,8 +19,10 @@ for fan in fans[0]:
     patches_fan.append(plt.Circle(xy=(fan[1], fan[2]), radius=0.25, animated=True, color='b'))
 
 fig, ax = plt.subplots(figsize=(12, 7))
-ax.set_xlim(-50, 50)
-ax.set_ylim(-50, 50)
+circle_radius = float(config['DEFAULT']['circleRadius'])
+circle_extension = float(config['DEFAULT']['circleExtension'])
+ax.set_xlim(-circle_radius-circle_extension, circle_radius+circle_extension)
+ax.set_ylim(-circle_radius-circle_extension, circle_radius+circle_extension)
 
 def init():
     for p in patches_guard:
