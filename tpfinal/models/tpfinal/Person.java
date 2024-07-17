@@ -46,6 +46,10 @@ public abstract class Person {
         return;
     }
 
+    public boolean success () {
+        return false;
+    }
+
     public void gear_predict(double dt) {
         double rx0, rx1, rx2, rx3, rx4, rx5;
 

@@ -7,10 +7,17 @@ public class Fan extends Person{
     double Ac = 8;
     double Bc = 1;
     Vector target;
+    boolean success;
 
     public Fan(int id, double x, double y, double vx, double vy, double radius, double mass, double desired, double tau) {
         super(id, x, y, vx, vy, radius, mass, desired, tau);
         target = new Vector(0, 0);
+        success = false;
+    }
+
+    @Override
+    public boolean success() {
+        return success;
     }
 
     @Override
@@ -24,7 +31,7 @@ public class Fan extends Person{
         target = target.add(vector);
 
         if (distance < radius) {
-            this.dead = true;
+            this.success = true;
         }
 
         vector = new Vector(target.x-rx[0], target.y-ry[0]);
@@ -47,7 +54,9 @@ public class Fan extends Person{
         double scalar = Ag*Math.exp(-distance/Bg);
 
         vector = vector.scalar(scalar);
-        target = target.add(vector);
+        if (!success) {
+            target = target.add(vector);
+        }
 
         if (distance < radius+p.radius){
             this.dead = true;
