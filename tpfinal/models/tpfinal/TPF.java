@@ -25,46 +25,51 @@ public class TPF {
         int time = Integer.parseInt(prop.getProperty("time"));
         double dt = Double.parseDouble(prop.getProperty("dt"));
         int simulations = Integer.parseInt(prop.getProperty("simulations"));
-        int guards = Integer.parseInt(prop.getProperty("guards"));
-        int fans = Integer.parseInt(prop.getProperty("fans"));
+        int guardStart = Integer.parseInt(prop.getProperty("guardStart"));
+        int guardEnd = Integer.parseInt(prop.getProperty("guardEnd"));
         double circleRadius = Double.parseDouble(prop.getProperty("circleRadius"));
         double circleExtension = Double.parseDouble(prop.getProperty("circleExtension"));
 
-        ExecutorService executor = Executors.newFixedThreadPool(60);
+        for (int g = guardStart; g <= guardEnd; g++) {
+            System.out.println("Start Sim " + g);
+            ExecutorService executor = Executors.newFixedThreadPool(1000);
 
-        List<Callable<TaskResponse>> tasks = new ArrayList<>();
+            List<Callable<TaskResponse>> tasks = new ArrayList<>();
 
-        for (int i = 0; i < simulations; i++) {
-            Task task = new Task(i, time, dt, guards, fans, desired, tau, circleRadius, circleExtension);
-            tasks.add(task);
-        }
-
-        try{
-            List<Future<TaskResponse>> results = executor.invokeAll(tasks);
-
-            List<TaskResponse> taskResponses = new ArrayList<>();
-            for (Future<TaskResponse> future : results) {
-                try {
-                    taskResponses.add(future.get());
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
+            for (int i = 0; i < simulations; i++) {
+                Task task = new Task(i, time, dt, g, desired, tau, circleRadius, circleExtension);
+                tasks.add(task);
             }
 
-            try (FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output") + ".csv"))
-            {
-                for (TaskResponse taskResponse : taskResponses) {
-                    writer.write(taskResponse.toString());
-                }
-                writer.flush();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            try{
+                List<Future<TaskResponse>> results = executor.invokeAll(tasks);
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            executor.shutdown();
+                System.out.println("Parsing Results " + g);
+                List<TaskResponse> taskResponses = new ArrayList<>();
+                for (Future<TaskResponse> future : results) {
+                    try {
+                        taskResponses.add(future.get());
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                System.out.println("Writing Results " + g);
+                try (FileWriter writer = new FileWriter(prop.getProperty("java") + prop.getProperty("output") + g + ".csv"))
+                {
+                    for (TaskResponse taskResponse : taskResponses) {
+                        writer.write(taskResponse.toString());
+                    }
+                    writer.flush();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                executor.shutdown();
+            }
         }
     }
 }
@@ -81,22 +86,21 @@ class Task implements Callable<TaskResponse> {
     List<Person> guards;
     Person fan;
 
-    Task(int id, int time, double dt, int guardCount, int fanCount, double desired, double tau, double circleRadius, double circleExtension) {
+    Task(int id, int time, double dt, int guardCount, double desired, double tau, double circleRadius, double circleExtension) {
         this.id = id;
         this.time = time;
         this.dt = dt;
 
-        this.generator = new Generator(guardCount, fanCount, desired, tau, circleRadius, circleExtension);
+        this.generator = new Generator(guardCount, desired, tau, circleRadius, circleExtension);
 
         this.guards = generator.generateGuards();
-        this.fan = generator.generateFans().getFirst();
+        this.fan = generator.generateFan();
 
         this.simulation = new Simulation(guards, fan);
     }
 
     @Override
     public TaskResponse call() throws Exception {
-        System.out.println("Start sim " + id);
         simulation.initialize(dt);
         boolean finished = false;
 
@@ -104,8 +108,6 @@ class Task implements Callable<TaskResponse> {
         for (i=0; i<time && !finished; i++) {
             finished = simulation.iterate(dt);
         }
-
-        System.out.println("End sim " + id);
         return new TaskResponse(fan.success(), i*dt);
     }
 }
