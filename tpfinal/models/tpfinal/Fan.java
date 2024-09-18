@@ -30,7 +30,7 @@ public class Fan extends Person{
         vector = vector.scalar(scalar);
         target = target.add(vector);
 
-        if (distance < radius) {
+        if (distance < 2*radius) {
             this.success = true;
         }
 

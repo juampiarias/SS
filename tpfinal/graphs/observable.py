@@ -11,10 +11,10 @@ config.read('../configs/app.config')
 
 fan_success = []
 simulation_time = []
-guards_number = list(range(1, 29))
+guards_number = list(range(1, 39))
 
-for i in range(28):
-    file_name = '../ios/simulation' + str(i + 1) + '.csv'
+for i in guards_number:
+    file_name = '../ios/simulation' + str(i) + '.csv'
     successes = 0
     with open(file_name, mode='r') as file:
         lector_csv = csv.reader(file)
